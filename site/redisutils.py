@@ -1,4 +1,5 @@
 import redis
+import datetime
 
 class RedisUtils:
 
@@ -13,30 +14,29 @@ class RedisUtils:
         count = self.db.incr('page_count')
         self.db.zadd('rank', name, count)
 
+    # kwargs should be title, type, template, date, preview
     def set_page(self, name, **kwargs):
+        timestamp = datetime.datetime.now()
         for key in kwargs:
             self.db.hset(name, key, kwargs[key])
             if key == 'type':
                 self.db.sadd(kwargs[key], name)
             else:
                 self.db.sadd('other', name)
+        self.db.hset(name, 'timestamp', timestamp)
         self.add_page_index(name)
 
     def get_page(self, name):
-        try:
-            page = self.db.hgetall(name)
-            return page
-        except:
+        page = self.db.hgetall(name)
+        if not page:
             print 'page not found'
-            return None
+        return page
 
     def get_pages_bytype(self, type):
-        try:
-            pages = self.db.smembers(type)
-            return pages
-        except:
+        pages = self.db.smembers(type)
+        if not pages:
             print 'format type not found'
-            return None
+        return pages
 
     def get_pages_byrank(self, range):
         start, stop = range
