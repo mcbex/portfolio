@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Example Project{% endblock %}
+{% block title %}{{ data['title'] }}{% endblock %}
 
 {% block scripts %}
 
@@ -20,7 +20,21 @@
 
 {% block content %}
 
-    <section id="bokeh-canvas"></section>
+    <section class="project-info">
+        <h2>{{ data['title'] }}</h2>
+        <p class="post-date">Posted: {{ data['timestamp'] }}</p>
+        <p class="project-description">
+            A simple SVG bokeh generator made with <a href="http://raphaeljs.com/">Raphael</a> and <a href="http://documentcloud.github.io/underscore/">Underscore</a>.
+        </p>
+    </section>
+    <section id="bokeh-canvas" class="dark-background"></section>
+    <section id="bokeh-controls">
+        <fieldset>
+            <label for="bg-switcher">Dark Background</label>
+            <input type="checkbox" name="bg-switcher" id="bg-switcher" checked>
+            <button id="generate">Generate Bokeh</button>
+        </fieldset>
+    </section>
 
 {% endblock %}
 

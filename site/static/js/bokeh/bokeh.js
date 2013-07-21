@@ -1,7 +1,19 @@
+// Bokeh Generator
+// requires: Raphael, Underscore
+// updated: 7/16/2013
+
 function Bokeh(paper){
     this.canvas = paper,
     this.width = paper.width,
-    this.height = paper.height
+    this.height = paper.height,
+    this.settings = {
+        maxRadius: this.height * 0.07,
+        minRadius: 5,
+        maxX: this.width - 100,
+        minX: 50,
+        maxY: this.height - 100,
+        minY: 50
+    }
 };
 
 Bokeh.prototype.randRange = function(max, min){
@@ -21,9 +33,9 @@ Bokeh.prototype.generateCircles = function(){
     for (var i = 0; i < Math.round(numCircles); i++){
         circle = {
             type : 'circle',
-            r : this.randRange(this.height * 0.07, 5),
-            cx : this.randRange(this.width - 50, 50),
-            cy : this.randRange(this.height - 100, 100)
+            r : this.randRange(this.settings.maxRadius, this.settings.minRadius),
+            cx : this.randRange(this.settings.maxX, this.settings.minX),
+            cy : this.randRange(this.settings.maxY, this.settings.minY)
         }
         circles.push(circle)
     }
@@ -58,23 +70,16 @@ Bokeh.prototype.addGlow = function(){
 Bokeh.prototype.styleCircles = function(){
     var circles = this.circles;
 
-    circles.attr({
-        'stroke-opacity' : 0.0
-    });
-
+    circles.attr({ 'stroke-opacity' : 0.0 });
     this.addGlow();
 };
 
-Bokeh.prototype.animate = function(){
-    this.circles.animate({transform: 't ' + Math.random() * 1000 + ',0'}, 5000)
-    this.glow.animate({transform: 't ' + Math.random() * 1000 + ',0'}, 5000)
-};
+Bokeh.prototype.makeBokeh = function(options){
+    this.settings = _.extend({}, this.settings, options);
 
-Bokeh.prototype.makeBokeh = function(){
-    var circles = this.drawCircles();
-
+    this.canvas.clear();
+    this.drawCircles();
     this.styleCircles();
-//			this.animate();
 };
 
 
