@@ -5,22 +5,13 @@ class RouteManager:
     def __init__(self):
         self.redis = RedisUtils()
 
-    def get_page_template(self, page_id):
-        page = self.redis.get_page(page_id)
-        if page and page['template']:
-            return page['template']
+    def get_project_byid(self, project_id):
+        project = self.redis.get_project(project_id)
+        if project and project['template']:
+            return project
         else:
             return None
 
-    def get_n_pages(self, num_pages):
-        range = (0, num_pages)
-        pages = self.redis.get_pages_byrank(range)
-        page_data = None
-        if pages and len(pages):
-            page_data = {}
-            for p in pages:
-                page_data[p] = self.redis.get_page(p)
-        return page_data
     def all_projects_bytype(self):
         types = self.redis.get_all_types()
         projects = {}
@@ -28,4 +19,13 @@ class RouteManager:
             projects[t] = self.redis.get_projects_bytype(t)
         return projects
 
+    def get_n_projects(self, num_projects):
+        range = (0, num_projects)
+        projects = self.redis.get_projects_byrank(range)
+        project_data = None
+        if projects and len(projects):
+            project_data = {}
+            for p in projects:
+                project_data[p] = self.redis.get_project(p)
+        return project_data
 

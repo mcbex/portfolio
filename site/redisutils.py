@@ -10,35 +10,48 @@ class RedisUtils:
         except:
             print 'redis not connected'
 
-    def add_page_index(self, name):
+    def add_project_index(self, name):
         count = self.db.incr('page_count')
         self.db.zadd('rank', name, count)
 
     # kwargs should be title, type, template, date, preview
-    def set_page(self, name, **kwargs):
+    def set_project(self, name, **kwargs):
         timestamp = datetime.datetime.now()
         for key in kwargs:
             self.db.hset(name, key, kwargs[key])
             if key == 'type':
                 self.db.sadd(kwargs[key], name)
-            else:
-                self.db.sadd('other', name)
+                self.db.sadd('types', kwargs[key])
+        if not kwargs['type']:
+            self.db.sadd('types', 'other')
         self.db.hset(name, 'timestamp', timestamp)
-        self.add_page_index(name)
+        self.add_project_index(name)
 
-    def get_page(self, name):
-        page = self.db.hgetall(name)
-        if not page:
-            print 'page not found'
-        return page
+    def get_project(self, name):
+        project = self.db.hgetall(name)
+        if not project:
+            print 'project not found'
+        return project
 
-    def get_pages_bytype(self, type):
-        pages = self.db.smembers(type)
-        if not pages:
+    def get_projects_bytype(self, type):
+        projects = self.db.smembers(type)
+        project_data = []
+        for p in projects:
+            project = self.get_project(p)
+            project['name'] = p
+            project.pop('type', None)
+            project_data.append(project)
+        if not projects:
             print 'format type not found'
-        return pages
+        return project_data
 
-    def get_pages_byrank(self, range):
+    def get_all_types(self):
+        types = self.db.smembers('types')
+        if not types:
+            print 'no types found'
+        return types
+
+    def get_projects_byrank(self, range):
         start, stop = range
         return self.db.zrange('rank', start, stop)
 
