@@ -21,4 +21,11 @@ class RouteManager:
             for p in pages:
                 page_data[p] = self.redis.get_page(p)
         return page_data
+    def all_projects_bytype(self):
+        types = self.redis.get_all_types()
+        projects = {}
+        for t in types:
+            projects[t] = self.redis.get_projects_bytype(t)
+        return projects
+
 
