@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Main Page{% endblock %}
+
+{% block content %}
+
+    {% for key, value in data.iteritems() %}
+        <p>
+            <a href="{{ url_for('views.load_page', id=key) }}">{{ value['title'] }}</a>
+            Posted: {{ value['timestamp'] }}
+        </p>
+    {% endfor %}
+
+{% endblock %}
+
+
