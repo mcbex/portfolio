@@ -12,11 +12,12 @@ response_headers = {
 @services.route('/scraper/<id>', methods=['GET'])
 def return_scraped_data(id):
     data = redis.scraper_get_scrape(id)
-    if data:
-        response = make_response(jsonify(data), 200)
+    try:
+        data = jsonify({ id: data })
+        response = make_response(data, 200)
         for header in response_headers:
             response.headers[header] = response_headers[header]
-    else:
+    except:
         message = { 'Error': 'Scraper ID not found' }
         response = make_response(jsonify(message), 404)
     return response
