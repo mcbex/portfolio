@@ -1,9 +1,9 @@
-from redisutils import RedisUtils
+from redisutils import Projects
 
 class RouteManager:
 
     def __init__(self):
-        self.redis = RedisUtils()
+        self.redis = Projects()
 
     def get_project_byid(self, project_id):
         project = self.redis.get_project(project_id)

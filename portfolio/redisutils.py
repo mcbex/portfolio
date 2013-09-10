@@ -2,10 +2,10 @@ import redis
 import datetime
 
 
-# set of utilitly functions for interacting with redis
 class RedisUtils:
-
+    # set of utilitly functions for interacting with redis
     def __init__(self):
+        """ connect to database """
         self.db = redis.Redis(host='localhost', port=6379, db=0)
         self.timestamp = datetime.datetime.now()
         try:
@@ -13,6 +13,9 @@ class RedisUtils:
         except:
             print 'redis not connected'
 
+
+class Projects(RedisUtils):
+    # TODO subclass project utils
     def add_project_index(self, name):
         """ helper method to auto add new projects with the next index num """
         count = self.db.incr('page_count')
@@ -68,6 +71,8 @@ class RedisUtils:
         start, stop = range
         return self.db.zrange('rank', start, stop)
 
+
+class Scraper(RedisUtils):
     # stuff for d3 web scraper project
     # TODO: make separate file and subclass for these
     def scraper_save_tagcount(self, name, data):
@@ -80,17 +85,27 @@ class RedisUtils:
                 if tag != 'url':
                     self.db.hset(name + ':' + key, tag, data[key][tag])
 
+    def scraper_normalize_tagcounts(self, tags):
+        tagcounts = []
+        for key, value in tags.iteritems():
+            tag = {}
+            tag['name'] = key
+            tag['count'] = value
+            tagcounts.append(tag)
+        return tagcounts
+
     def scraper_get_scrape(self, scraper):
         data = []
         keys = self.db.smembers(scraper)
         for key in keys:
             scrape = {}
             scrape['topic'] = key
-            scrape['tagcounts'] = self.db.hgetall(scraper + ':' + key)
             scrape['url'] = self.db.hget('scrapeurls', scraper + ':' + key)
             timestamp = self.db.hget('scrapetimes', scraper)
             if timestamp:
                 scrape['timestamp'] = timestamp
+            tags = self.db.hgetall(scraper + ':' + key)
+            scrape['tags'] = self.scraper_normalize_tagcounts(tags)
             data.append(scrape)
         return data
 
@@ -105,6 +120,3 @@ class RedisUtils:
 
     def scraper_getall(self):
         return self.db.smembers('scrapers')
-
-
-

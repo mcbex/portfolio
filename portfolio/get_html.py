@@ -1,5 +1,5 @@
 import urllib2, re
-from redisutils import RedisUtils
+from redisutils import Scraper
 
 sites = {
     'java': 'http://www.java.com/en/',
@@ -17,7 +17,7 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/27.0.1453.116 Safari/537.36'
 }
 tag_counter = {}
-r = RedisUtils()
+scraper = Scraper()
 opener = urllib2.build_opener()
 urllib2.install_opener(opener)
 
@@ -37,4 +37,4 @@ for key, val in sites.iteritems():
     tags = re.findall("<([A-Za-z0-9]+){1}", html)
     add_tags(key, tags)
 
-r.scraper_save_tagcount('science2013', tag_counter)
+scraper.scraper_save_tagcount('science2013', tag_counter)
