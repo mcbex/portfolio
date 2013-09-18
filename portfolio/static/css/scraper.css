@@ -1,0 +1,21 @@
+#demo-container .default-chart p {
+    background-color: cadetblue;
+    color: white;
+    padding: 3px;
+    border-bottom: 2px solid white;
+    font-size: 12px;
+}
+
+#demo-container .chart-title {
+    text-align: center;
+    font-weight: bold;
+}
+
+#demo-container .horizontalbar-chart {
+    padding-top: 20px;
+}
+
+#demo-container .horizontalbar-chart .bar {
+    fill: steelblue;
+    stroke: white;
+}
