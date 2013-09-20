@@ -50,10 +50,6 @@ MarkupVisualizer.prototype._parseProp = function(data, prop) {
     return data;
 };
 
-MarkupVisualizer.prototype.appendTitle = function() {
-    this.selection.append('div')
-        .attr('class', 'chart-title')
-        .text(this.title);
 MarkupVisualizer.prototype.pluck = function(data, prop) {
     var len = data.length,
         plucked = [];
@@ -98,61 +94,69 @@ MarkupVisualizer.prototype.getAxis = function(scale, orient, labels) {
 };
 
 MarkupVisualizer.prototype.horizontalBar = function() {
-    var self = this, height = 320,
-        containerWidth, barWidth, scale,
-        textx, texty;
+    var self = this, height = this.maxHeight,
+        containerWidth, scalex, scaley, texty;
 
     containerWidth = parseInt(d3.select(this.elem).style('width'));
-    barWidth = Math.floor(containerWidth / this.data.length);
-
-    scale = d3.scale.linear()
-        .range([5, height - 50])
-        .domain([0, d3.max(this.data, function(d) {
-            return +self._parseProp(d, self.dataProps.value);
-        })]);
+    scalex = this.getOrdinalScale(0, containerWidth - 50);
+    scaley = this.getLinearScale(5, height - 75);
 
     this.selection = d3.select(this.elem).append('svg')
         .attr('class', 'horizontalbar-chart')
-        .attr('width', '100%')
+        .attr('width', containerWidth)
         .attr('height', height)
         .append('g')
+            .attr('transform', 'translate(40,-50)');
 
-    this.selection.selectAll('.bar')
+    this.selection.selectAll('g')
         .data(this.data).enter()
         .append('rect')
-        .attr('class', 'bar')
-        .attr('width', barWidth + 'px')
-        .attr('height', function(d, i) {
-            return scale(self._parseProp(d, self.dataProps.value));
-        })
-        .attr('x', function(d, i) {
-            return i * barWidth;
-        })
-        .attr('y', function(d) {
-            return height - scale(self._parseProp(d, self.dataProps.value));
-        });
+            .attr('class', this.className)
+            .attr('width', Math.floor(scalex.rangeBand()) + 'px')
+            .attr('height', function(d, i) {
+                return scaley(self._parseProp(d, self.dataProps.value));
+            })
+            .attr('x', function(d, i) {
+                return scalex(i);
+            })
+            .attr('y', function(d) {
+                return height - scaley(self._parseProp(d, self.dataProps.value));
+            });
 
-    this.selection.selectAll('text')
-        .data(this.data).enter()
+    this.selection.append('g')
+        .attr('class', 'x-axis')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(this.getAxis(scalex, 'bottom', this.pluck(this.data, 'name')))
+        .selectAll('text')
+            .style('text-anchor', 'end')
+            .attr('transform', 'rotate(-65)')
+            .attr('dx', '-0.25em')
+            .attr('dy', '-0.15em');
+
+    this.selection.append('g')
+        .attr('transform', 'translate(0,75)')
+        .attr('class', 'y-axis')
+        .call(this.getAxis(this.getLinearScale(height - 75, 5), 'left'));
+
+    this.selection.append('g')
+        .attr('transform', 'translate(' + ((containerWidth / 2) - 50) + ','
+            + (height + 50) + ')')
         .append('text')
-        .attr('x', function(d, i) {
-            return i * barWidth;
-        })
-        .attr('y', function(d) {
-            return height - scale(self._parseProp(d, self.dataProps.value));
-        })
-        .attr('transform', function(d, i) { 
-            textx = i * barWidth;
-            texty = height - scale(self._parseProp(d, self.dataProps.value));
-            return 'rotate(-90,' + textx + ',' + texty + ')'
-        })
-        .attr('dx', 5)
-        .attr('dy', (barWidth / 2) + 1)
-        .text(function(d) {
-            return self._parseProp(d, self.dataProps.name);
-        });
+            .style('text-anchor', 'middle')
+            .text(this.title);
 
-    this.appendTitle();
+    if (this.dataProps.color) {
+        this.selection.selectAll('rect')
+            .style('fill', function(d) {
+                return d.color;
+            });
+    }
+};
+
+MarkupVisualizer.prototype.appendTitle = function() {
+    this.selection.append('div')
+        .attr('class', 'chart-title')
+        .text(this.title);
 };
 
 MarkupVisualizer.prototype.defaultChart = function() {

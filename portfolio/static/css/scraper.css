@@ -6,6 +6,11 @@
     font-size: 12px;
 }
 
+#demo-container .x-axis, #demo-container .y-axis {
+    font-size: 10px;
+    fill: gray;
+}
+
 #demo-container .chart-title {
     text-align: center;
     font-weight: bold;
@@ -16,6 +21,11 @@
 }
 
 #demo-container .horizontalbar-chart .bar {
-    fill: steelblue;
+    fill: lightsteelblue;
     stroke: white;
+}
+
+#demo-container .horizontalbar-chart .y-axis .domain, #demo-container .horizontalbar-chart .x-axis .domain {
+    fill: none;
+    stroke: gray;
 }
