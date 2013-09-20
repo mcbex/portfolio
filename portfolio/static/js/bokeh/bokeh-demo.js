@@ -1,18 +1,24 @@
-Zepto(function($){
+// TODO write service that accepts svg and returns png
 
-    var paper = new Raphael('bokeh-canvas'),
-        bokeh = new Bokeh(paper);
+(function($){
 
-    bokeh.makeBokeh();
+    $(document).ready(function() {
 
-    $('#bg-switcher').on('change', function(e){
-        var darken = $(e.currentTarget).is(':checked');
+        var paper = new Raphael('bokeh-canvas'),
+            bokeh = new Bokeh(paper);
 
-        $('#bokeh-canvas').toggleClass('dark-background', darken);
-    });
-
-    $('#generate').on('click', function(){
         bokeh.makeBokeh();
+
+        $('#bg-switcher').on('change', function(e){
+            var darken = $(e.currentTarget).is(':checked');
+
+            $('#bokeh-canvas').toggleClass('dark-background', darken);
+        });
+
+        $('#generate').on('click', function(){
+            bokeh.makeBokeh();
+        });
+
     });
 
-});
+})(jQuery);
