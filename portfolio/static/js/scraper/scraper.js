@@ -112,6 +112,9 @@ MarkupVisualizer.prototype.horizontalBar = function() {
         .data(this.data).enter()
         .append('rect')
             .attr('class', this.className)
+            .attr('data-visualizer', function(d) {
+                return JSON.stringify(d);
+            })
             .attr('width', Math.floor(scalex.rangeBand()) + 'px')
             .attr('height', function(d, i) {
                 return scaley(self._parseProp(d, self.dataProps.value));
