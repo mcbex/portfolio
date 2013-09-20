@@ -54,6 +54,47 @@ MarkupVisualizer.prototype.appendTitle = function() {
     this.selection.append('div')
         .attr('class', 'chart-title')
         .text(this.title);
+MarkupVisualizer.prototype.pluck = function(data, prop) {
+    var len = data.length,
+        plucked = [];
+
+    for (var i = 0; i < len; i++) {
+        plucked.push(data[i][prop]);
+    }
+
+    return plucked;
+};
+
+MarkupVisualizer.prototype.getMaxValue = function() {
+    var self = this;
+
+    return d3.max(this.data, function(d) {
+        return +self._parseProp(d, self.dataProps.value);
+    });
+};
+
+MarkupVisualizer.prototype.getLinearScale = function(minRange, maxRange) {
+    return d3.scale.linear()
+        .range([minRange, maxRange])
+        .domain([0, this.getMaxValue()]);
+};
+
+MarkupVisualizer.prototype.getOrdinalScale = function(minRange, maxRange) {
+    return d3.scale.ordinal()
+        .rangeBands([minRange, maxRange])
+        .domain(d3.range(0, this.data.length));
+};
+
+MarkupVisualizer.prototype.getAxis = function(scale, orient, labels) {
+    var axis = d3.svg.axis()
+        .scale(scale)
+        .orient(orient);
+
+    if (labels) {
+        axis.tickValues(labels);
+    }
+
+    return axis;
 };
 
 MarkupVisualizer.prototype.horizontalBar = function() {
