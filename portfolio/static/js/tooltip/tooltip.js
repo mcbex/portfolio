@@ -1,3 +1,7 @@
+/* another tooltip plugin - works with svg elements and can generate text dynamically
+/ requires jQuery
+/ written 9/20/2013
+*/
 (function($) {
 
     $.fn.tooltip = function(options) {
