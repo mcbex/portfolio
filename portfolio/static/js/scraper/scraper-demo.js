@@ -120,6 +120,16 @@
                     v.render();
                 });
             }
+
+            $('.bar').tooltip({
+                content: function(elem) {
+                    var data = $(elem).data('visualizer');
+
+                    return '<p>name: ' + data.name + '</p>'
+                        + '<p>group: ' + data.group + '</p>'
+                        + '<p>count: ' + data.count + '</p>';
+                }
+            });
         }, function(resp) {
             console && console.log(resp);
         });
