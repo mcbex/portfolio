@@ -128,8 +128,10 @@
                     return '<p>name: ' + data.name + '</p>'
                         + '<p>group: ' + data.group + '</p>'
                         + '<p>count: ' + data.count + '</p>';
-                }
+                },
+                padding: 15
             });
+
         }, function(resp) {
             console && console.log(resp);
         });

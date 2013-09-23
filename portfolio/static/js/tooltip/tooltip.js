@@ -6,14 +6,16 @@
 
     $.fn.tooltip = function(options) {
 
-        // $this refers to the elem the plugin was called on
+        // $this refers to the elem/collection the plugin was called on
         // options:
         // content: string, html, or function that returns string/html. Func executes
         // in the context of the element the tooltip is called on and/or takes an arg
         // that is the element
+        // padding: space between arrow and mouse pointer
         var $this = this,
             settings = $.extend({
-                content: 'Default text'
+                content: 'Default text',
+                padding: 20
             }, options),
             $wrapper = $('<div class="tooltip">');
 
@@ -41,73 +43,78 @@
                 }, tooltipSize: {
                     width: $wrapper.outerWidth(),
                     height: $wrapper.outerHeight()
-                }, wrapperPos: {
-                    top: $wrapper.offset().top,
-                    left: $wrapper.offset().left
                 }
             };
         };
 
-        function isTooltipVisible() {
+        function setTooltipPosition(mousePos) {
             var pos = getPositions();
 
-            return (pos.wrapperPos.top + pos.tooltipSize.height) < pos.winSize.bottom
-                && (pos.wrapperPos.left + pos.tooltipSize.width) < pos.winSize.width
-                && pos.wrapperPos.top > pos.winSize.top;
+            // put below cursor
+            if ((mousePos.y - pos.tooltipSize.height) < pos.winSize.top) {
+                $wrapper.css({
+                    top: mousePos.y + settings.padding,
+                    left: mousePos.x - (pos.tooltipSize.width / 2)
+                }).addClass('tooltip-top');
+            }
+
+            // reposition left of cursor
+            else if ((mousePos.x + pos.tooltipSize.width) > pos.winSize.width) {
+                $wrapper.css({
+                    top: mousePos.y - (pos.tooltipSize.height/ 2),
+                    left: (mousePos.x - pos.tooltipSize.width) - settings.padding
+                }).addClass('tooltip-right');
+            }
+
+            //reposition right of cursor
+            else if ((mousePos.x - pos.tooltipSize.width) < 0) {
+                $wrapper.css({
+                    top: mousePos.y - (pos.tooltipSize.height/ 2),
+                    left: mousePos.x + settings.padding
+                }).addClass('tooltip-left');
+            }
+
+            // position above cursor
+            else {
+                $wrapper.css({
+                    top: mousePos.y - (pos.tooltipSize.height + settings.padding),
+                   left: mousePos.x - (pos.tooltipSize.width / 2)
+                }).addClass('tooltip-bottom');
+            }
+
         };
 
-        function reposition(mousePos, elemWidth) {
-            var pos = getPositions();
-
-            if ((pos.wrapperPos.top + pos.tooltipSize.height) > pos.winSize.top) {
-                $wrapper.css({
-                    top: mousePos.y + 15
-                });
+        function getTooltipText() {
+            if ($.type(settings.content) != 'function') {
+                return settings.content;
+            } else {
+                return settings.content.call(this, this);
             }
-
-            // need to handle reposition for left and right
-            if ((pos.wrapperPos.left + pos.tooltipSize.width) < pos.winSize.width) {
-                $wrapper.css({
-                    left: (mousePos.x + (elemWidth / 2)) - ($wrapper.outerWidth() / 2)
-                });
-            }
-
         };
 
         // make sure the plugin returns 'this' for chaining
         return $this.each(function() {
 
-            function getTooltipText() {
-                if ($.type(settings.content) != 'function') {
-                    return settings.content;
-                } else {
-                    return settings.content.call(this, this);
-                }
-            };
-
             $(this).on('mouseenter', debounce(function(e) {
+                // check this for browser compatibility
                 var pos = {
                         x: e.pageX,
                         y: e.pageY
-                    },
-                    elemWidth = $(this).width() || parseInt($(this).attr('width'));
+                    };
 
                 $wrapper.html(getTooltipText.call(this))
-                    .css({
-                        position: 'absolute',
-                        top: pos.y - ($wrapper.outerHeight() + 15),
-                        left: (pos.x + (elemWidth / 2)) - ($wrapper.outerWidth() / 2)
-                    })
-                    .show();
+                    .removeClass('tooltip-left tooltip-right tooltip-top '
+                        + 'tooltip-bottom');
 
-                if (!isTooltipVisible()) {
-                    reposition(pos, elemWidth);
-                }
-            }, 100));
+                setTooltipPosition(pos);
+
+                $wrapper.show();
+
+            }, 50));
 
             $(this).on('mouseleave', debounce(function(e) {
                 $wrapper.html('').hide();
-            }, 100));
+            }, 50));
 
         });
 
