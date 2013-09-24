@@ -108,15 +108,19 @@
     };
 
     window.onload = function(e) {
-        var visualizer;
+        var visualizers;
+
+        $('#demo-container').append('<label>Sort Alphabetically</label>'
+            + '<input id = "visualizer-sort" type="checkbox">');
+
 
         fetchData('science2013').then(function(resp) {
-            visualizer = makePerTermCharts(resp);
+            visualizers = makePerTermCharts(resp);
 
-            if (!visualizer.length) {
-                visualizer.render();
+            if (!visualizers.length) {
+                visualizers.render();
             } else {
-                _.each(visualizer, function(v) {
+                _.each(visualizers, function(v) {
                     v.render();
                 });
             }
@@ -129,7 +133,13 @@
                         + '<p>group: ' + data.group + '</p>'
                         + '<p>count: ' + data.count + '</p>';
                 },
-                padding: 15
+                padding: 25
+            });
+
+            $('#visualizer-sort').on('change', function() {
+                _.each(visualizers, function(v) {
+                    v.sortByName('ascending', 1000, 50);
+                });
             });
 
         }, function(resp) {

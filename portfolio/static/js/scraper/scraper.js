@@ -2,12 +2,18 @@
 * requires D3
 */
 
-function MarkupVisualizer(config) {
-    var self = this;
+// TODO namespace/encapsulate methods for each chart type
 
-    _.each(config, function(val, key) {
-        self[key] = val;
-    });
+function MarkupVisualizer(config) {
+    for (key in config) {
+        this[key] = config[key];
+    }
+
+    if (!config.className) {
+        this.className = 'chart-item';
+    }
+
+    this.containerWidth = parseInt(d3.select(this.elem).style('width'));
 
     this.init();
 };
@@ -50,7 +56,7 @@ MarkupVisualizer.prototype._parseProp = function(data, prop) {
     return data;
 };
 
-MarkupVisualizer.prototype.pluck = function(data, prop) {
+MarkupVisualizer.prototype._pluck = function(data, prop) {
     var len = data.length,
         plucked = [];
 
@@ -68,13 +74,16 @@ MarkupVisualizer.prototype.getMaxValue = function() {
         return +self._parseProp(d, self.dataProps.value);
     });
 };
-
+// need to pass both range:arr and domain:arr
+// need to use linear scale to sort data with duplicate values
 MarkupVisualizer.prototype.getLinearScale = function(minRange, maxRange) {
     return d3.scale.linear()
         .range([minRange, maxRange])
         .domain([0, this.getMaxValue()]);
 };
 
+// need to pass both range:arr and domain:arr
+// range = output values domain = input values
 MarkupVisualizer.prototype.getOrdinalScale = function(minRange, maxRange) {
     return d3.scale.ordinal()
         .rangeBands([minRange, maxRange])
@@ -93,14 +102,32 @@ MarkupVisualizer.prototype.getAxis = function(scale, orient, labels) {
     return axis;
 };
 
+// sorts x axis by alphabetical order (ascending or descending)
+MarkupVisualizer.prototype.sortByName = function(order, duration, delay) {
+    var scale = this.getOrdinalScale(0, this.containerWidth - 50)
+            .domain(this.data.sort(function(a, b) {
+                return d3[order](a.name, b.name)
+            })
+            .map(function(d) {
+                return d.name;
+            }))
+            .copy();
+
+    this.chartItems.transition().duration(duration)
+        .delay(function(d, i) { return i * delay; })
+        .attr("x", function(d) { return scale(d.name); });
+};
+
+// TODO need to calculate paddings etc to get rid of 'magic numbers'
 MarkupVisualizer.prototype.horizontalBar = function() {
     var self = this, height = this.maxHeight,
-        containerWidth, scalex, scaley, texty;
+        containerWidth = this.containerWidth,
+        scalex, scaley;
 
-    containerWidth = parseInt(d3.select(this.elem).style('width'));
     scalex = this.getOrdinalScale(0, containerWidth - 50);
     scaley = this.getLinearScale(5, height - 75);
 
+    // create svg and initial selection
     this.selection = d3.select(this.elem).append('svg')
         .attr('class', 'horizontalbar-chart')
         .attr('width', containerWidth)
@@ -108,7 +135,8 @@ MarkupVisualizer.prototype.horizontalBar = function() {
         .append('g')
             .attr('transform', 'translate(40,-50)');
 
-    this.selection.selectAll('g')
+    // add data bars
+    this.chartItems = this.selection.selectAll('g')
         .data(this.data).enter()
         .append('rect')
             .attr('class', this.className)
@@ -126,21 +154,24 @@ MarkupVisualizer.prototype.horizontalBar = function() {
                 return height - scaley(self._parseProp(d, self.dataProps.value));
             });
 
+    // add x axis
     this.selection.append('g')
         .attr('class', 'x-axis')
         .attr('transform', 'translate(0,' + height + ')')
-        .call(this.getAxis(scalex, 'bottom', this.pluck(this.data, 'name')))
+        .call(this.getAxis(scalex, 'bottom', this._pluck(this.data, 'name')))
         .selectAll('text')
             .style('text-anchor', 'end')
             .attr('transform', 'rotate(-65)')
             .attr('dx', '-0.25em')
             .attr('dy', '-0.15em');
 
+    // add y axis
     this.selection.append('g')
-        .attr('transform', 'translate(0,75)')
         .attr('class', 'y-axis')
+        .attr('transform', 'translate(0,75)')
         .call(this.getAxis(this.getLinearScale(height - 75, 5), 'left'));
 
+    // add chart labels
     this.selection.append('g')
         .attr('transform', 'translate(' + ((containerWidth / 2) - 50) + ','
             + (height + 50) + ')')
@@ -148,8 +179,9 @@ MarkupVisualizer.prototype.horizontalBar = function() {
             .style('text-anchor', 'middle')
             .text(this.title);
 
+    // color bars
     if (this.dataProps.color) {
-        this.selection.selectAll('rect')
+        this.chartItems
             .style('fill', function(d) {
                 return d.color;
             });
@@ -179,4 +211,3 @@ MarkupVisualizer.prototype.defaultChart = function() {
 
     this.appendTitle();
 };
-
