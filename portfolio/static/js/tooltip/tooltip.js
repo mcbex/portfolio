@@ -51,7 +51,8 @@
             var pos = getPositions();
 
             // put below cursor
-            if ((mousePos.y - pos.tooltipSize.height) < pos.winSize.top) {
+            if ((mousePos.y - pos.tooltipSize.height - settings.padding)
+                < pos.winSize.top) {
                 $wrapper.css({
                     top: mousePos.y + settings.padding,
                     left: mousePos.x - (pos.tooltipSize.width / 2)
@@ -59,7 +60,8 @@
             }
 
             // reposition left of cursor
-            else if ((mousePos.x + pos.tooltipSize.width) > pos.winSize.width) {
+            else if ((mousePos.x + pos.tooltipSize.width + settings.padding)
+                > pos.winSize.width) {
                 $wrapper.css({
                     top: mousePos.y - (pos.tooltipSize.height/ 2),
                     left: (mousePos.x - pos.tooltipSize.width) - settings.padding
@@ -67,7 +69,7 @@
             }
 
             //reposition right of cursor
-            else if ((mousePos.x - pos.tooltipSize.width) < 0) {
+            else if ((mousePos.x - pos.tooltipSize.width - settings.padding) < 0) {
                 $wrapper.css({
                     top: mousePos.y - (pos.tooltipSize.height/ 2),
                     left: mousePos.x + settings.padding
@@ -110,11 +112,11 @@
 
                 $wrapper.show();
 
-            }, 50));
+            }, 200));
 
             $(this).on('mouseleave', debounce(function(e) {
                 $wrapper.html('').hide();
-            }, 50));
+            }, 200));
 
         });
 
