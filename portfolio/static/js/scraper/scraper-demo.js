@@ -69,7 +69,7 @@
     };
 
     function makeDefaultChart(data) {
-        return new MarkupVisualizer({
+        return new Visualizers({
             title: 'Default',
             data: data.science2013,
             elem: '#demo-container',
@@ -88,11 +88,10 @@
         tags = sortTagsBy(tags, 'group');
 
         visualizers = _.map(data.science2013, function(d) {
-            return new MarkupVisualizer({
+            return new Visualizer({
                 title: d.topic,
                 data: d.tags,
                 elem: '#demo-container',
-                chartType: 'horizontalBar',
                 dataProps: {
                     name: 'name',
                     value: 'count',
@@ -111,7 +110,9 @@
         var visualizers;
 
         $('#demo-container').append('<label>Sort Alphabetically</label>'
-            + '<input id = "visualizer-sort" type="checkbox">');
+            + '<input id = "visualizer-sortby-name" type="checkbox">'
+            + '<lable>Sort By Value</label>'
+            + '<input id = "visualizer-sortby-value" type="checkbox">');
 
 
         fetchData('science2013').then(function(resp) {
@@ -136,10 +137,32 @@
                 padding: 25
             });
 
-            $('#visualizer-sort').on('change', function() {
-                _.each(visualizers, function(v) {
-                    v.sortByName('ascending', 1000, 50);
-                });
+            $('#visualizer-sortby-name').on('change', function() {
+                var checked = $(this).is(':checked');
+
+                if (checked) {
+                    _.each(visualizers, function(v) {
+                        v.sortByName('ascending', 1000, 50);
+                    });
+                } else {
+                    _.each(visualizers, function(v) {
+                        v.restoreSort();
+                    });
+                }
+            });
+
+            $('#visualizer-sortby-value').on('change', function() {
+                var checked = $(this).is(':checked');
+
+                if (checked) {
+                    _.each(visualizers, function(v) {
+                        v.sortByValue(1000, 50);
+                    });
+                } else {
+                    _.each(visualizers, function(v) {
+                        v.restoreSort();
+                    });
+                }
             });
 
         }, function(resp) {
