@@ -2,212 +2,247 @@
 * requires D3
 */
 
-// TODO namespace/encapsulate methods for each chart type
+// TODO use _parse_prop instead of directly accessing properties
+// TODO only use this.data to set up the initial chart - then manpulate data from
+// chart items
 
-function MarkupVisualizer(config) {
-    for (key in config) {
-        this[key] = config[key];
-    }
+// public methods: logger, init, render, getMaxValue, sortBy<x>
+// TODO take private methods out of prototype
 
-    if (!config.className) {
-        this.className = 'chart-item';
-    }
+(function() {
 
-    this.containerWidth = parseInt(d3.select(this.elem).style('width'));
+    window.Visualizer = function(config) {
 
-    this.init();
-};
-
-MarkupVisualizer.prototype.logger = function(msg) {
-    return console && console.log(msg);
-};
-
-// init is noop by default
-MarkupVisualizer.prototype.init = function() {};
-
-MarkupVisualizer.prototype.render = function() {
-    // if no chart type is specified use the default
-
-    if (this.chartType) {
-        this[this.chartType]();
-    } else {
-        this.defaultChart();
-    }
-};
-
-MarkupVisualizer.prototype._parseProp = function(data, prop) {
-    var test = /\./.test(prop),
-        props;
-
-    if (test) {
-        props = prop.split('.');
-
-        for (var i = 0; i < props.length; i++) {
-            if (data[props[i]]) {
-                data = data[props[i]];
-            } else {
-                data = undefined;
-            }
+        for (key in config) {
+            this[key] = config[key];
         }
-    } else {
-        data = data[prop];
-    }
 
-    return data;
-};
+        if (!config.className) {
+            this.className = 'chart-item';
+        }
 
-MarkupVisualizer.prototype._pluck = function(data, prop) {
-    var len = data.length,
-        plucked = [];
+        this.containerWidth = parseInt(d3.select(this.elem).style('width'));
 
-    for (var i = 0; i < len; i++) {
-        plucked.push(data[i][prop]);
-    }
+        this.init();
+    };
 
-    return plucked;
-};
+    Visualizer.prototype.logger = function(msg) {
+        return console && console.log(msg);
+    };
 
-MarkupVisualizer.prototype.getMaxValue = function() {
-    var self = this;
+    // init is noop by default
+    Visualizer.prototype.init = function() {};
 
-    return d3.max(this.data, function(d) {
-        return +self._parseProp(d, self.dataProps.value);
-    });
-};
-// need to pass both range:arr and domain:arr
-// need to use linear scale to sort data with duplicate values
-MarkupVisualizer.prototype.getLinearScale = function(minRange, maxRange) {
-    return d3.scale.linear()
-        .range([minRange, maxRange])
-        .domain([0, this.getMaxValue()]);
-};
+    Visualizer.prototype._parseProp = function(data, prop) {
+        var test = /\./.test(prop),
+            props;
 
-// need to pass both range:arr and domain:arr
-// range = output values domain = input values
-MarkupVisualizer.prototype.getOrdinalScale = function(minRange, maxRange) {
-    return d3.scale.ordinal()
-        .rangeBands([minRange, maxRange])
-        .domain(d3.range(0, this.data.length));
-};
+        if (test) {
+            props = prop.split('.');
 
-MarkupVisualizer.prototype.getAxis = function(scale, orient, labels) {
-    var axis = d3.svg.axis()
-        .scale(scale)
-        .orient(orient);
+            for (var i = 0; i < props.length; i++) {
+                if (data[props[i]]) {
+                    data = data[props[i]];
+                } else {
+                    data = undefined;
+                }
+            }
+        } else {
+            data = data[prop];
+        }
 
-    if (labels) {
-        axis.tickValues(labels);
-    }
+        return data;
+    };
 
-    return axis;
-};
+    Visualizer.prototype._pluck = function(data, prop) {
+        var len = data.length,
+            plucked = [];
 
-// sorts x axis by alphabetical order (ascending or descending)
-MarkupVisualizer.prototype.sortByName = function(order, duration, delay) {
-    var scale = this.getOrdinalScale(0, this.containerWidth - 50)
-            .domain(this.data.sort(function(a, b) {
-                return d3[order](a.name, b.name)
-            })
-            .map(function(d) {
-                return d.name;
-            }))
-            .copy();
+        for (var i = 0; i < len; i++) {
+            plucked.push(data[i][prop]);
+        }
 
-    this.chartItems.transition().duration(duration)
-        .delay(function(d, i) { return i * delay; })
-        .attr("x", function(d) { return scale(d.name); });
-};
+        return plucked;
+    };
 
-// TODO need to calculate paddings etc to get rid of 'magic numbers'
-MarkupVisualizer.prototype.horizontalBar = function() {
-    var self = this, height = this.maxHeight,
-        containerWidth = this.containerWidth,
-        scalex, scaley;
+    Visualizer.prototype.getMaxValue = function() {
+        var self = this;
 
-    scalex = this.getOrdinalScale(0, containerWidth - 50);
-    scaley = this.getLinearScale(5, height - 75);
-
-    // create svg and initial selection
-    this.selection = d3.select(this.elem).append('svg')
-        .attr('class', 'horizontalbar-chart')
-        .attr('width', containerWidth)
-        .attr('height', height)
-        .append('g')
-            .attr('transform', 'translate(40,-50)');
-
-    // add data bars
-    this.chartItems = this.selection.selectAll('g')
-        .data(this.data).enter()
-        .append('rect')
-            .attr('class', this.className)
-            .attr('data-visualizer', function(d) {
-                return JSON.stringify(d);
-            })
-            .attr('width', Math.floor(scalex.rangeBand()) + 'px')
-            .attr('height', function(d, i) {
-                return scaley(self._parseProp(d, self.dataProps.value));
-            })
-            .attr('x', function(d, i) {
-                return scalex(i);
-            })
-            .attr('y', function(d) {
-                return height - scaley(self._parseProp(d, self.dataProps.value));
-            });
-
-    // add x axis
-    this.selection.append('g')
-        .attr('class', 'x-axis')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(this.getAxis(scalex, 'bottom', this._pluck(this.data, 'name')))
-        .selectAll('text')
-            .style('text-anchor', 'end')
-            .attr('transform', 'rotate(-65)')
-            .attr('dx', '-0.25em')
-            .attr('dy', '-0.15em');
-
-    // add y axis
-    this.selection.append('g')
-        .attr('class', 'y-axis')
-        .attr('transform', 'translate(0,75)')
-        .call(this.getAxis(this.getLinearScale(height - 75, 5), 'left'));
-
-    // add chart labels
-    this.selection.append('g')
-        .attr('transform', 'translate(' + ((containerWidth / 2) - 50) + ','
-            + (height + 50) + ')')
-        .append('text')
-            .style('text-anchor', 'middle')
-            .text(this.title);
-
-    // color bars
-    if (this.dataProps.color) {
-        this.chartItems
-            .style('fill', function(d) {
-                return d.color;
-            });
-    }
-};
-
-MarkupVisualizer.prototype.appendTitle = function() {
-    this.selection.append('div')
-        .attr('class', 'chart-title')
-        .text(this.title);
-};
-
-MarkupVisualizer.prototype.defaultChart = function() {
-    var self = this;
-
-    this.selection = d3.select(this.elem).append('div')
-        .attr('class', 'default-chart');
-
-    this.selection.selectAll('div')
-        .data(this.data).enter()
-        .append('p').style('width', function(d) {
-            return (self._parseProp(d, self.dataProps.value) * 10) + 'px';
-        }).text(function(d) {
-            return self._parseProp(d, self.dataProps.name)
-                + ' (' + self._parseProp(d, self.dataProps.value) + ')';
+        return d3.max(this.data, function(d) {
+            return +self._parseProp(d, self.dataProps.value);
         });
+    };
+    // need to pass both range:arr and domain:arr
+    // need to use linear scale to sort data with duplicate values
+    Visualizer.prototype.getLinearScale = function(range, domain) {
+        domain = domain || [0, this.getMaxValue()];
 
-    this.appendTitle();
-};
+        return d3.scale.linear()
+            .range(range)
+            .domain(domain);
+    };
+
+    // need to pass both range:arr and domain:arr
+    // range = output values domain = input values
+    Visualizer.prototype.getOrdinalScale = function(range, domain) {
+        domain = domain || d3.range(0, this.data.length);
+
+        return d3.scale.ordinal()
+            .rangeBands(range)
+            .domain(domain);
+    };
+
+    Visualizer.prototype.getAxis = function(scale, orient, labels) {
+        var axis = d3.svg.axis()
+            .scale(scale)
+            .orient(orient);
+
+        if (labels) {
+            axis.tickValues(labels);
+        }
+
+        return axis;
+    };
+
+    Visualizer.prototype.getTransition = function(duration, delay) {
+        duration = duration || 1000;
+        delay = delay || 50;
+
+        return d3.transition()
+            .duration(duration)
+            .delay(function(d, i) { return i * delay; })
+            .ease('linear');
+    };
+
+    Visualizer.prototype.doTransition = function(scale, callback, transition) {
+        var self = this;
+
+        transition.each(function() {
+            self.chartItems.transition()
+                .attr('x', callback);
+
+            self.selection.select('.x-axis').transition()
+                .call(self.getAxis(scale, 'bottom',
+                    self._pluck(self.chartItems.data(), 'name')))
+                .selectAll('text')
+                    .style('text-anchor', 'end')
+                    .attr('transform', 'rotate(-65)')
+                    .attr('dx', '-0.25em')
+                    .attr('dy', '-0.15em');
+        });
+    };
+
+    // sorts x axis by alphabetical order (ascending or descending)
+    Visualizer.prototype.sortByName = function(order, duration, delay) {
+        var transition, scale, callback;
+
+        transition = this.getTransition(duration, delay);
+        scale = this.getOrdinalScale([0, this.containerWidth - 50],
+            this.chartItems.data().sort(function(a, b) {
+                return d3[order](a.name, b.name)
+            }).map(function(d) {
+                return d.name;
+            })
+        ).copy();
+        callback = function(d) { return scale(d.name) };
+
+        this.doTransition(scale, callback, transition);
+    };
+
+    Visualizer.prototype.sortByValue = function(duration, delay) {
+        var self = this, transition, scale, callback;
+
+        transition = this.getTransition(duration, delay);
+        scale = this.getOrdinalScale([0, this.containerWidth - 50],
+            this.chartItems.data().sort(function(a, b) {
+                return b.count - a.count;
+            }).map(function(d, i) {
+                return d.name;
+            })
+        ).copy();
+        callback = function(d) { return scale(d.name); };
+
+        this.doTransition(scale, callback, transition);
+    };
+
+    Visualizer.prototype.restoreSort = function() {
+        var transition, scale, callback;
+
+        transition = this.getTransition();
+        scale = this.getOrdinalScale([0, this.containerWidth - 50]),
+        callback = function(d, i) { return scale(i) };
+
+        this.doTransition(scale, callback, transition);
+    };
+
+    // TODO need to calculate paddings etc to get rid of 'magic numbers'
+    // maintain container width/height separate from chart width/height
+    Visualizer.prototype.render = function() {
+        var self = this, height = this.maxHeight,
+            scalex, scaley;
+
+        scalex = this.getOrdinalScale([0, this.containerWidth - 50]);
+        scaley = this.getLinearScale([5, height - 75]);
+
+        // create svg and initial selection
+        this.selection = d3.select(this.elem).append('svg')
+            .attr('class', 'horizontalbar-chart')
+            .attr('width', this.containerWidth)
+            .attr('height', height)
+            .append('g')
+                .attr('transform', 'translate(40,-50)');
+
+        // add data bars
+        this.chartItems = this.selection.selectAll('g')
+            .data(this.data).enter()
+            .append('rect')
+                .attr('class', this.className)
+                .attr('data-visualizer', function(d) {
+                    return JSON.stringify(d);
+                })
+                .attr('width', Math.floor(scalex.rangeBand()) + 'px')
+                .attr('height', function(d, i) {
+                    return scaley(self._parseProp(d, self.dataProps.value));
+                })
+                .attr('x', function(d, i) {
+                    return scalex(i);
+                })
+                .attr('y', function(d) {
+                    return height - scaley(self._parseProp(d, self.dataProps.value));
+                });
+
+        // add x axis
+        this.selection.append('g')
+            .attr('class', 'x-axis')
+            .attr('transform', 'translate(0,' + height + ')')
+            .call(this.getAxis(scalex, 'bottom', this._pluck(this.data, 'name')))
+            .selectAll('text')
+                .style('text-anchor', 'end')
+                .attr('transform', 'rotate(-65)')
+                .attr('dx', '-0.25em')
+                .attr('dy', '-0.15em');
+
+        // add y axis
+        this.selection.append('g')
+            .attr('class', 'y-axis')
+            .attr('transform', 'translate(0,75)')
+            .call(this.getAxis(this.getLinearScale([height - 75, 5]), 'left'));
+
+        // add chart labels
+        this.selection.append('g')
+            .attr('transform', 'translate(' + ((this.containerWidth / 2) - 50) + ','
+                + (height + 50) + ')')
+            .append('text')
+                .style('text-anchor', 'middle')
+                .text(this.title);
+
+        // color bars
+        if (this.dataProps.color) {
+            this.chartItems
+                .style('fill', function(d) {
+                    return d.color;
+                });
+        }
+    };
+
+})();
