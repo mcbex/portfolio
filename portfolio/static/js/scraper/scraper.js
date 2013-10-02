@@ -132,8 +132,8 @@
         });
     };
 
-    // sorts x axis by alphabetical order (ascending or descending)
-    Visualizer.prototype.sortByName = function(order, duration, delay) {
+    // sorts x axis by alphabetical order
+    Visualizer.prototype.sortByName = function(duration, delay, order) {
         var transition, scale, callback;
 
         transition = this.getTransition(duration, delay);

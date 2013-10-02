@@ -109,10 +109,10 @@
     window.onload = function(e) {
         var visualizers;
 
-        $('#demo-container').append('<label>Sort Alphabetically</label>'
-            + '<input id = "visualizer-sortby-name" type="checkbox">'
-            + '<lable>Sort By Value</label>'
-            + '<input id = "visualizer-sortby-value" type="checkbox">');
+        $('#demo-container').append('<label>Sort By Name</label>'
+            + '<input id="visualizer-sortby-name" data-sort="sortByName" type="checkbox">'
+            + '<label>Sort By Value</label>'
+            + '<input id="visualizer-sortby-value" data-sort="sortByValue" type="checkbox">');
 
 
         fetchData('science2013').then(function(resp) {
@@ -137,26 +137,15 @@
                 padding: 25
             });
 
-            $('#visualizer-sortby-name').on('change', function() {
-                var checked = $(this).is(':checked');
+            $('#visualizer-sortby-name, #visualizer-sortby-value').on('change', function() {
+                var checked = $(this).is(':checked'),
+                    sortType = $(this).data('sort');
+
+                $(this).siblings('input').prop('checked', false);
 
                 if (checked) {
                     _.each(visualizers, function(v) {
-                        v.sortByName('ascending', 1000, 50);
-                    });
-                } else {
-                    _.each(visualizers, function(v) {
-                        v.restoreSort();
-                    });
-                }
-            });
-
-            $('#visualizer-sortby-value').on('change', function() {
-                var checked = $(this).is(':checked');
-
-                if (checked) {
-                    _.each(visualizers, function(v) {
-                        v.sortByValue(1000, 50);
+                        v[sortType](1000, 50, 'ascending');
                     });
                 } else {
                     _.each(visualizers, function(v) {
