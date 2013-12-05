@@ -7,7 +7,6 @@
 // chart items
 
 // public methods: logger, init, render, getMaxValue, sortBy<x>
-// TODO take private methods out of prototype
 
 (function() {
 
@@ -17,11 +16,13 @@
             this[key] = config[key];
         }
 
-        if (!config.className) {
-            this.className = 'chart-item';
-        }
+        this.className = this.className || 'chart-item';
+        this.maxHeight = this.maxHeight || 350;
 
         this.containerWidth = parseInt(d3.select(this.elem).style('width'));
+
+        this.innerWidth = this.containerWidth - (this.containerWidth * 0.08);
+        this.innerHeight = this.maxHeight - (this.maxHeight * 0.2);
 
         this.init();
     };
@@ -137,7 +138,7 @@
         var transition, scale, callback;
 
         transition = this.getTransition(duration, delay);
-        scale = this.getOrdinalScale([0, this.containerWidth - 50],
+        scale = this.getOrdinalScale([0, this.innerWidth],
             this.chartItems.data().sort(function(a, b) {
                 return d3[order](a.name, b.name)
             }).map(function(d) {
@@ -153,7 +154,7 @@
         var self = this, transition, scale, callback;
 
         transition = this.getTransition(duration, delay);
-        scale = this.getOrdinalScale([0, this.containerWidth - 50],
+        scale = this.getOrdinalScale([0, this.innerWidth],
             this.chartItems.data().sort(function(a, b) {
                 return b.count - a.count;
             }).map(function(d, i) {
@@ -169,20 +170,19 @@
         var transition, scale, callback;
 
         transition = this.getTransition();
-        scale = this.getOrdinalScale([0, this.containerWidth - 50]),
+        scale = this.getOrdinalScale([0, this.innerWidth]),
         callback = function(d, i) { return scale(i) };
 
         this.doTransition(scale, callback, transition);
     };
 
-    // TODO need to calculate paddings etc to get rid of 'magic numbers'
-    // maintain container width/height separate from chart width/height
+    // draw the chart and axis
     Visualizer.prototype.render = function() {
         var self = this, height = this.maxHeight,
             scalex, scaley;
 
-        scalex = this.getOrdinalScale([0, this.containerWidth - 50]);
-        scaley = this.getLinearScale([5, height - 75]);
+        scalex = this.getOrdinalScale([0, this.innerWidth]);
+        scaley = this.getLinearScale([5, this.innerHeight]);
 
         // create svg and initial selection
         this.selection = d3.select(this.elem).append('svg')
@@ -190,7 +190,7 @@
             .attr('width', this.containerWidth)
             .attr('height', height)
             .append('g')
-                .attr('transform', 'translate(40,-50)');
+                .attr('transform', 'translate(40, -50)');
 
         // add data bars
         this.chartItems = this.selection.selectAll('g')
@@ -225,12 +225,12 @@
         // add y axis
         this.selection.append('g')
             .attr('class', 'y-axis')
-            .attr('transform', 'translate(0,75)')
-            .call(this.getAxis(this.getLinearScale([height - 75, 5]), 'left'));
+            .attr('transform', 'translate(0, 75)')
+            .call(this.getAxis(this.getLinearScale([this.innerHeight, 5]), 'left'));
 
         // add chart labels
         this.selection.append('g')
-            .attr('transform', 'translate(' + ((this.containerWidth / 2) - 50) + ','
+            .attr('transform', 'translate(' + (this.innerWidth / 2) + ','
                 + (height + 50) + ')')
             .append('text')
                 .style('text-anchor', 'middle')
