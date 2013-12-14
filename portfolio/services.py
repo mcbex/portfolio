@@ -27,3 +27,13 @@ def return_scraped_data(id):
         message = { 'Error': 'Scraper ID not found' }
         response = make_response(jsonify(message), 404)
     return response
+
+@services.route('/test/<message>', methods=['GET'])
+def return_message(message):
+    try:
+        output = { 'message': message }
+        response = make_response(jsonify(output), 200)
+    except:
+        output = { 'Error': 'Internal Server Error' }
+        response = make_response(jsonify(output), 500)
+    return response

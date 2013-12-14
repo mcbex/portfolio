@@ -90,7 +90,7 @@
             if ($.type(settings.content) != 'function') {
                 return settings.content;
             } else {
-                return settings.content.call(this, this);
+                return settings.content.call(this);
             }
         };
 

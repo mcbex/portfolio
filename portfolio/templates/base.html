@@ -12,8 +12,6 @@
 
     {% block scripts %}
 <!-- main scripts go here -->
-<!-- need to make a script file that checks for zepto support and loads jquery - zepto does not have deferreds :(
-    if needed -->
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="{{ url_for('static', filename='js/libs/underscore-min.js') }}"></script>
     {% endblock %}

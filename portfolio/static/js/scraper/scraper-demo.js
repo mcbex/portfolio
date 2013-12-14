@@ -90,6 +90,7 @@
         visualizers = _.map(data.science2013, function(d) {
             return new Visualizer({
                 title: d.topic,
+                url: d.url,
                 data: d.tags,
                 elem: '#demo-container',
                 dataProps: {
@@ -127,8 +128,8 @@
             }
 
             $('.bar').tooltip({
-                content: function(elem) {
-                    var data = $(elem).data('visualizer');
+                content: function() {
+                    var data = $(this).data('visualizer');
 
                     return '<p>name: ' + data.name + '</p>'
                         + '<p>group: ' + data.group + '</p>'

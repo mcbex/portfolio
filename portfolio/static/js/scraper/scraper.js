@@ -232,9 +232,11 @@
         this.selection.append('g')
             .attr('transform', 'translate(' + (this.innerWidth / 2) + ','
                 + (height + 50) + ')')
-            .append('text')
-                .style('text-anchor', 'middle')
-                .text(this.title);
+            .append('a')
+                .attr('xlink:href', this.url)
+                .append('text')
+                    .style('text-anchor', 'middle')
+                    .text(this.title);
 
         // color bars
         if (this.dataProps.color) {
