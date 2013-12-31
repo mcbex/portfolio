@@ -15,13 +15,12 @@ class RedisUtils:
 
 
 class Projects(RedisUtils):
-    # TODO subclass project utils
+    # TODO make separate file
     def add_project_index(self, name):
         """ helper method to auto add new projects with the next index num """
         count = self.db.incr('page_count')
         self.db.zadd('rank', name, count)
 
-    # kwargs should be title, type, template, date, preview
     # TODO: add tagging, add remove project
     def set_project(self, name, **kwargs):
         """ adds a new project to the db. expects name(str), optional kwargs 
@@ -74,7 +73,8 @@ class Projects(RedisUtils):
 
 class Scraper(RedisUtils):
     # stuff for d3 web scraper project
-    # TODO: make separate file and subclass for these
+    # TODO: make separate file and rename
+    # TODO add help text
     def scraper_save_tagcount(self, name, data):
         self.db.sadd('scrapers', name)
         self.db.hset('scrapetimes', name, self.timestamp)
