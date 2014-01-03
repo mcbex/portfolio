@@ -24,8 +24,8 @@ class RouteManager:
         projects = self.redis.get_projects_byrank(range)
         project_data = None
         if projects and len(projects):
-            project_data = {}
+            project_data = []
             for p in projects:
-                project_data[p] = self.redis.get_project(p)
+                project_data.append(self.redis.get_project(p))
         return project_data
 

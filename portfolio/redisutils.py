@@ -42,6 +42,7 @@ class Projects(RedisUtils):
         project = self.db.hgetall(name)
         if not project:
             print 'project not found'
+        project['name'] = name
         return project
 
     def get_projects_bytype(self, type):
