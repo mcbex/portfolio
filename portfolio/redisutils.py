@@ -34,7 +34,10 @@ class Projects(RedisUtils):
         if not kwargs['type']:
             if not self.db.hget(name, 'type'):
                 self.db.sadd('types', 'other')
-        self.db.hset(name, 'timestamp', self.timestamp)
+        if self.db.hget(name, 'timestamp'):
+            self.db.hset(name, 'updated', self.timestamp)
+        else:
+            self.db.hset(name, 'timestamp', self.timestamp)
         self.add_project_index(name)
 
     def get_project(self, name):

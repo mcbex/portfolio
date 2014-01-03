@@ -8,6 +8,14 @@
         <p>
             <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
 
+            {% if value['timestamp'] %}
+                Posted: {{ value['timestamp'] }}
+            {% endif %}
+
+            {% if value['updated'] %}
+                Updated: {{ value['updated'] }}
+            {% endif %}
+
         </p>
     {% endfor %}
 

@@ -10,7 +10,15 @@
         {% for project in data[d] %}
             <p>
                 <a href="{{ url_for('views.load_page', id=project['name']) }}">{{ project['title'] }}</a>
-                Posted: {{ project['timestamp'] }}
+
+                {% if project['timestamp'] %}
+                    Posted: {{ project['timestamp'] }}
+                {% endif %}
+
+                {% if project['updated'] %}
+                    Updated: {{ project['updated'] }}
+                {% endif %}
+
             </p>
         {% endfor %}
 
