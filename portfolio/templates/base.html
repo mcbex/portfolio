@@ -21,9 +21,9 @@
 
 <body>
 
-    <section class="container main-container">
+    <section class="main-container">
 
-        <header class="container">
+        <header>
         {% block header %}
 
             <h1>{% block main_title %}Ming Beckwith{% endblock %}</h1>
@@ -36,10 +36,11 @@
             </ul>
             {% endblock %}
 
+
         {% endblock %}
         </header>
 
-        <section>
+        <section class="container content">
         {% block content %}
 
         {% endblock %}
@@ -47,7 +48,7 @@
 
         <footer>
         {% block footer %}
-            <p>Some footer stuff goes here</p>
+            <h6>Some footer stuff goes here</h6>
         {% endblock %}
         </footer>
 

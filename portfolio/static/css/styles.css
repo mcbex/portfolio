@@ -1,9 +1,19 @@
 @import url(reset.css);
-@import url(http://fonts.googleapis.com/css?family=Croissant+One);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Condensed);
+@import url(pacifico_script/stylesheet.css);
+
+html, body {
+    overflow-x: hidden;
+    height: 100%;
+}
 
 body {
     font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
     font-size: 12px;
+}
+
+body, .main-container, header {
+    position: relative;
 }
 
 body .main-container {
@@ -11,17 +21,16 @@ body .main-container {
 }
 
 h1 {
-    font-family: "Croissant One", "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    font-family: "pacifico_script", "Brush Script MT", cursive;
     font-size: 42px;
     line-height: 100%;
-}
-
-header {
-    margin: 25px 0;
+    color: #C297C7;
 }
 
 header h1 {
-    border-bottom: 3px solid #CECECE;
+    border-bottom: 16px solid #E3E3E3;
+    margin: 0 -2000px;
+    padding: 25px 2000px 0 2000px;
 }
 
 .container {
@@ -30,17 +39,50 @@ header h1 {
 
 .main-container {
     margin: 0 auto;
-    width: 60%;
+    width: 80%;
+    min-height: 100%;
 }
 
 .main-menu {
-    display: inline;
+    position: absolute;
+    top: 36px;
+    right: 0;
 }
 
 .main-menu li {
+    display: inline;
     float: left;
-    margin: 8px 5% 0 0;
+    margin-left: 10px;
     font-size: 14px;
-    cursor: pointer;
 }
 
+.main-menu li a {
+    padding: 8px 20px;
+    background-color: #DEC8E0;
+}
+
+.main-menu li a:hover {
+    background-color: #F3E6F5;
+}
+
+.content {
+    min-height: 350px;
+    padding: 15px 0 75px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    min-height: 60px;
+}
+
+footer h6 {
+    border-top: 36px solid #E3E3E3;
+    position: relative;
+    margin: 0 -2000px;
+    padding: 5px 2000px;
+}
+
+.project-info {
+    margin-bottom: 10px;
+}
