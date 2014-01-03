@@ -2,6 +2,8 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu+Condensed);
 @import url(pacifico_script/stylesheet.css);
 
+/* global styles */
+
 html, body {
     overflow-x: hidden;
     height: 100%;
@@ -18,6 +20,14 @@ body, .main-container, header {
 
 body .main-container {
     line-height: 160%;
+}
+
+a, a:active, a:visited {
+    color: #6E4173;
+}
+
+a:hover {
+    color: #AD60B5;
 }
 
 h1 {
@@ -82,6 +92,8 @@ footer h6 {
     margin: 0 -2000px;
     padding: 5px 2000px;
 }
+
+/* project page styles */
 
 .project-info {
     margin-bottom: 10px;
