@@ -18,7 +18,7 @@ def load_projects():
     projects = manager.all_projects_bytype()
     return render_template('projects.html', data=projects)
 
-@views.route('/about/')
+@views.route('/articles/')
 def load_about():
     return 'hello about'
 
