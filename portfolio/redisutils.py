@@ -31,7 +31,7 @@ class Projects(RedisUtils):
             if key == 'type':
                 self.db.sadd(kwargs[key], name)
                 self.db.sadd('types', kwargs[key])
-        if not kwargs['type']:
+        if not 'type' in kwargs:
             if not self.db.hget(name, 'type'):
                 self.db.sadd('types', 'other')
         if self.db.hget(name, 'timestamp'):
@@ -61,6 +61,7 @@ class Projects(RedisUtils):
             print 'format type not found'
         return project_data
 
+    # TODO get all names
     def get_all_types(self):
         """ lists all project types added to date """
         types = self.db.smembers('types')

@@ -1,3 +1,3 @@
-from portfolio import portfolio
+import portfolio.portfolio
 
-portfolio.app.run(debug=True)
+portfolio.portfolio.app.run(debug=True)
