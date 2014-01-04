@@ -20,8 +20,8 @@ def return_scraped_data(id):
             response = make_response(data, 200)
             for header in response_headers:
                 response.headers[header] = response_headers[header]
-        except:
-            message = { 'Error': 'Internal Server Error, data malformed' }
+        except Exception as e:
+            message = { 'Error': 'Internal Server Error, ' + str(e) }
             response = make_response(jsonify(message), 500)
     else:
         message = { 'Error': 'Scraper ID not found' }
