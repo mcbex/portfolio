@@ -1,5 +1,6 @@
 from flask import abort, Blueprint, jsonify, make_response
 from redisutils import Scraper
+import backgrounds
 
 services = Blueprint('services', __name__)
 response_headers = {
@@ -26,6 +27,25 @@ def return_scraped_data(id):
     else:
         message = { 'Error': 'Scraper ID not found' }
         response = make_response(jsonify(message), 404)
+    return response
+
+# TODO consider whether to pass args in route
+@services.route('/backgrounds/squares/<int:size>/<int:height>', methods=['GET'])
+def return_squares(size, height):
+    rows = height / size
+    data = backgrounds.squares(size, rows)
+    if data:
+        try:
+            data = jsonify({ 'background': data })
+            response = make_response(data, 200)
+            for header in response_headers:
+                response.headers[header] = response_headers[header]
+        except Exception as e:
+            message = { 'Error': 'Internal Server Error, ' + str(e) }
+            response = make_response(jsonify(message), 500)
+    else:
+        message = { 'Error': 'No background generated' }
+        response = make_response(jsonify(message), 500)
     return response
 
 @services.route('/test/<message>', methods=['GET'])
