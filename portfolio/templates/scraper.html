@@ -22,15 +22,19 @@
 
 {% block content %}
 
-    <section class="project-info">
-        <h2>{{ data['title'] }}</h2>
-        <p class="post-date">Posted: {{ data['timestamp'] }}</p>
-        <p class="project-description">
-            A description will go here
-        </p>
-    </section>
+    <section class="content scraper">
 
-    <section id="demo-container"></section>
+        <section class="project-info">
+            <h2>{{ data['title'] }}</h2>
+            <p class="post-date">Posted: {{ data['timestamp'] }}</p>
+            <p class="project-description">
+                A description will go here
+            </p>
+        </section>
+
+        <section id="demo-container"></section>
+
+    </section>
 
 {% endblock %}
 

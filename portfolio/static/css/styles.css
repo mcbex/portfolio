@@ -12,6 +12,7 @@ html, body {
 body {
     font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
     font-size: 12px;
+    background-color: #E8E8E8;
 }
 
 body, .main-container, header {
@@ -23,7 +24,7 @@ body .main-container {
 }
 
 a, a:active, a:visited {
-    color: #6E4173;
+    color: #661E6E;
 }
 
 a:hover {
@@ -34,11 +35,11 @@ h1 {
     font-family: "pacifico_script", "Brush Script MT", cursive;
     font-size: 42px;
     line-height: 100%;
-    color: #C297C7;
+    color: #A545B0;
 }
 
 header h1 {
-    border-bottom: 16px solid #E3E3E3;
+    border-bottom: 16px solid #D1D1D1;
     margin: 0 -2000px;
     padding: 25px 2000px 0 2000px;
 }
@@ -68,16 +69,12 @@ header h1 {
 
 .main-menu li a {
     padding: 8px 20px;
-    background-color: #DEC8E0;
+    background-color: #D8A9DE;
 }
 
 .main-menu li a:hover {
-    background-color: #F3E6F5;
-}
-
-.content {
-    min-height: 350px;
-    padding: 15px 0 75px;
+    background-color: #BA72C2;
+    color: #E8E8E8;
 }
 
 footer {
@@ -87,7 +84,7 @@ footer {
 }
 
 footer h6 {
-    border-top: 36px solid #E3E3E3;
+    border-top: 36px solid #D1D1D1;
     position: relative;
     margin: 0 -2000px;
     padding: 5px 2000px;
@@ -95,6 +92,18 @@ footer h6 {
 
 /* project page styles */
 
+.content {
+    min-height: 350px;
+    padding: 15px 20px 75px;
+}
+
 .project-info {
     margin-bottom: 10px;
 }
+
+/* project page specific styles */
+
+.content.scraper {
+    background-color: white;
+}
+

@@ -4,20 +4,24 @@
 
 {% block content %}
 
-    {% for value in data %}
-        <p>
-            <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
+    <section class="content">
 
-            {% if value['timestamp'] %}
-                Posted: {{ value['timestamp'] }}
-            {% endif %}
+        {% for value in data %}
+            <p>
+                <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
 
-            {% if value['updated'] %}
-                Updated: {{ value['updated'] }}
-            {% endif %}
+                {% if value['timestamp'] %}
+                    Posted: {{ value['timestamp'] }}
+                {% endif %}
 
-        </p>
-    {% endfor %}
+                {% if value['updated'] %}
+                    Updated: {{ value['updated'] }}
+                {% endif %}
+
+            </p>
+        {% endfor %}
+
+    </section>
 
 {% endblock %}
 

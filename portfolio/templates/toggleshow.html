@@ -55,105 +55,109 @@
 
 {% block content %}
 
-    <section class="project-info">
-        <h2>{{ data['title'] }}</h2>
-        <p class="post-date">Posted: {{ data['timestamp'] }}</p>
-        <p class="project-description">
-            Another jQuery plugin
-        </p>
-    </section>
+    <section class="content">
 
-    <section class="toggleshow-demo">
-        <div class="example">
-            <p class="demo-description">
-                A basic example with default options
+        <section class="project-info">
+            <h2>{{ data['title'] }}</h2>
+            <p class="post-date">Posted: {{ data['timestamp'] }}</p>
+            <p class="project-description">
+                Another jQuery plugin
             </p>
-            <div class="demo">
-                <div id="toggleshow">
-                    parent
-                    <div>
-                        child one
-                        <p>inner content</p>
-                    </div>
-                    <div>
-                        child two
-                    </div>
-                </div>
-            </div>
-            <div class="code">
-                <pre><code>
-    sample code goes here
-                </code></pre>
-            </div>
-        </div>
+        </section>
 
-        <div class="example">
-            <p class="demo-description">
-                Call the plugin on multiple elements using a class name
-            </p>
-            <div class="demo">
-                <div class="toggleshow2">
-                    parent 1
-                    <div>
-                        child one
-                        <p>
-                            inner content
-                        </p>
-                    </div>
-                    <div>
-                        child two
-                    </div>
-                </div>
-                <div class="toggleshow2">
-                    parent 2
-                    <div>
-                        child one
-                        <p>
-                            inner content
-                        </p>
-                    </div>
-                    <div>
-                        child two
-                    </div>
-                </div>
-            </div>
-            <div class="code">
-                <pre><code>
-    sample code goes here
-                </code></pre>
-            </div>
-        </div>
-
-        <div class="example">
-            <p class="demo-description">
-                With default options
-            </p>
-            <div class="demo">
-                <div class="toggleshow3">
-                    parent 1
-                    <div class="container1">
-                        container 1
-                        <div class="child1">
-                            child 1
+        <section class="toggleshow-demo">
+            <div class="example">
+                <p class="demo-description">
+                    A basic example with default options
+                </p>
+                <div class="demo">
+                    <div id="toggleshow">
+                        parent
+                        <div>
+                            child one
                             <p>inner content</p>
-                            <div class="child2">
-                                child two
-                                <p>inner content</p>
-                            </div>
+                        </div>
+                        <div>
+                            child two
                         </div>
                     </div>
-                    <div class="container2">
-                        container 2
-                        <p>inner content</p>
-                    </div>
+                </div>
+                <div class="code">
+                    <pre><code>
+        sample code goes here
+                    </code></pre>
                 </div>
             </div>
-            <div class="code">
-                <pre><code>
-    sample code goes here
-                </code></pre>
+
+            <div class="example">
+                <p class="demo-description">
+                    Call the plugin on multiple elements using a class name
+                </p>
+                <div class="demo">
+                    <div class="toggleshow2">
+                        parent 1
+                        <div>
+                            child one
+                            <p>
+                                inner content
+                            </p>
+                        </div>
+                        <div>
+                            child two
+                        </div>
+                    </div>
+                    <div class="toggleshow2">
+                        parent 2
+                        <div>
+                            child one
+                            <p>
+                                inner content
+                            </p>
+                        </div>
+                        <div>
+                            child two
+                        </div>
+                    </div>
+                </div>
+                <div class="code">
+                    <pre><code>
+        sample code goes here
+                    </code></pre>
+                </div>
             </div>
-        </div>
+
+            <div class="example">
+                <p class="demo-description">
+                    With default options
+                </p>
+                <div class="demo">
+                    <div class="toggleshow3">
+                        parent 1
+                        <div class="container1">
+                            container 1
+                            <div class="child1">
+                                child 1
+                                <p>inner content</p>
+                                <div class="child2">
+                                    child two
+                                    <p>inner content</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container2">
+                            container 2
+                            <p>inner content</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code">
+                    <pre><code>
+        sample code goes here
+                    </code></pre>
+                </div>
+            </div>
+        </section>
+
     </section>
 
 {% endblock %}

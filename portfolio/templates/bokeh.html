@@ -5,7 +5,6 @@
 {% block scripts %}
 
     {{ super() }}
-    <script src="{{ url_for('static', filename='js/libs/raphael.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bokeh/bokeh.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bokeh/bokeh-demo.js') }}"></script>
 
@@ -20,20 +19,24 @@
 
 {% block content %}
 
-    <section class="project-info">
-        <h2>{{ data['title'] }}</h2>
-        <p class="post-date">Posted: {{ data['timestamp'] }}</p>
-        <p class="project-description">
-            A simple SVG bokeh generator made with <a href="http://raphaeljs.com/">Raphael</a> and <a href="http://documentcloud.github.io/underscore/">Underscore</a>.
-        </p>
-    </section>
-    <section id="bokeh-canvas" class="dark-background"></section>
-    <section id="bokeh-controls">
-        <fieldset>
-            <label for="bg-switcher">Dark Background</label>
-            <input type="checkbox" name="bg-switcher" id="bg-switcher" checked>
-            <button id="generate">Generate Bokeh</button>
-        </fieldset>
+    <section class="content">
+
+        <section class="project-info">
+            <h2>{{ data['title'] }}</h2>
+            <p class="post-date">Posted: {{ data['timestamp'] }}</p>
+            <p class="project-description">
+                A simple SVG bokeh generator made with <a href="http://raphaeljs.com/">Raphael</a> and <a href="http://documentcloud.github.io/underscore/">Underscore</a>.
+            </p>
+        </section>
+        <section id="bokeh-canvas" class="dark-background"></section>
+        <section id="bokeh-controls">
+            <fieldset>
+                <label for="bg-switcher">Dark Background</label>
+                <input type="checkbox" name="bg-switcher" id="bg-switcher" checked>
+                <button id="generate">Generate Bokeh</button>
+            </fieldset>
+        </section>
+
     </section>
 
 {% endblock %}
