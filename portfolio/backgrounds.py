@@ -1,7 +1,8 @@
 import random, math
 
 def squares(size, rows):
-    '''generate random pattern of squares in json format'''
+    '''generate random grid of squares that tapers off
+    to the right'''
     pattern = []
     cols = 50
     ys = [y * size for y in range(rows)]
@@ -10,15 +11,15 @@ def squares(size, rows):
         for i, x in enumerate(xs):
             if i * 2 <= cols:
                 odds = math.pow(cols - (i * 2), 2)
-                if odds > 0:
-                    if random.randint(0, math.pow(cols, 2)) <= odds:
-                        pattern.append({
-                            'type': 'rect',
-                            'width': size,
-                            'height': size,
-                            'x': x,
-                            'y': y,
-                            'fill': 'white',
-                            'stroke-width': 0
-                        })
+                if random.randint(0, math.pow(cols, 2)) <= odds:
+                    pattern.append({
+                        'type': 'rect',
+                        'width': size,
+                        'height': size,
+                        'x': x,
+                        'y': y,
+                        'fill': 'white',
+                        'stroke-width': 0
+                    })
     return pattern
+
