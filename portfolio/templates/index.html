@@ -6,25 +6,41 @@
 
     <section class="content">
 
-        {% for value in data %}
-            <p>
-                <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
+        <div class="recent-projects">
 
-                {% if value['timestamp'] %}
-                    Posted: {{ value['timestamp'] }}
-                {% endif %}
+            <h3>recent projects</h3>
+
+        {% for value in data %}
+
+                <div class="project">
+
+                    <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
+
                     {% if value['preview'] %}
                         <div class="project-preview">
                             <img src="{{ url_for('static', filename='images/' + value['preview']) }}">
                         </div>
                     {% endif %}
 
-                {% if value['updated'] %}
-                    Updated: {{ value['updated'] }}
-                {% endif %}
+                    {% if value['timestamp'] %}
+                        <p>Posted: {{ value['timestamp'] }}</p>
+                    {% endif %}
 
-            </p>
+                    {% if value['updated'] %}
+                        <p>Updated: {{ value['updated'] }}</p>
+                    {% endif %}
+
+                </div>
+
         {% endfor %}
+
+        </div>
+
+        <div class="recent-articles">
+
+            <h3>recent articles</h3>
+
+        </div>
 
     </section>
 

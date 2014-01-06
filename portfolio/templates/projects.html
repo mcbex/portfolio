@@ -4,25 +4,29 @@
 
 {% block content %}
 
+    <div class="content all-projects">
+
     {% for d in data %}
-        <h2>{{ d }}</h2>
+        <h3 class="categories">{{ d }}s</h3>
 
         {% for project in data[d] %}
-            <p>
+            <p class="project">
                 <a href="{{ url_for('views.load_page', id=project['name']) }}">{{ project['title'] }}</a>
 
                 {% if project['timestamp'] %}
-                    Posted: {{ project['timestamp'] }}
+                    <span>Posted: {{ project['timestamp'] }}</span>
                 {% endif %}
 
                 {% if project['updated'] %}
-                    Updated: {{ project['updated'] }}
+                    <span>Updated: {{ project['updated'] }}</span>
                 {% endif %}
 
             </p>
         {% endfor %}
 
     {% endfor %}
+
+    </div>
 
 {% endblock %}
 

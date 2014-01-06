@@ -30,15 +30,23 @@ a:hover {
     color: #AD60B5;
 }
 
-h1 {
+h1, h3 {
     font-family: "pacifico_script", "Brush Script MT", cursive;
-    font-size: 42px;
     line-height: 100%;
+}
+
+h1 {
+    font-size: 42px;
     color: #A545B0;
 }
 
+h3 {
+    font-size: 24px;
+    color: #666;
+}
+
 header h1 {
-    border-bottom: 16px solid #D1D1D1;
+    border-bottom: 16px solid #B3B3B3;
     margin: 0 -2000px;
     padding: 25px 2000px 0 2000px;
 }
@@ -82,7 +90,7 @@ footer {
 }
 
 footer h6 {
-    border-top: 36px solid #D1D1D1;
+    border-top: 36px solid #666;
     margin: 0 -2000px;
     padding: 5px 2000px;
 }
@@ -91,13 +99,34 @@ footer h6 {
 
 .content {
     padding: 15px 20px 75px;
+    overflow: hidden;
 }
 
 .project-info {
+    width: 60%;
     margin-bottom: 10px;
+    padding: 10px 20px;
+    background-color: white;
 }
 
-/* project page specific styles */
+/* page specific styles */
+
+.recent-projects {
+    width: 50%;
+    float: left;
+    margin-left: 1%;
+}
+
+.recent-articles {
+    width: 30%;
+    float: right;
+}
+
+.recent-projects, .recent-articles {
+    padding: 15px 4%;
+    background-color: white;
+}
+
 .recent-projects .project-preview {
     float: left;
     margin-right: 10px;
@@ -113,7 +142,22 @@ footer h6 {
     height: 125px;
 }
 
-.content.scraper {
+.project {
+    margin-top: 10px;
+}
+
+.project span {
+    margin-left: 10px;
+}
+
+.content.scraper, .content.all-projects {
     background-color: white;
 }
+
+h3.categories {
+    margin-top: 10px;
+    border-bottom: 3px solid #D8A9DE;
+    display: inline-block;
+}
+
 
