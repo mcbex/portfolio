@@ -13,6 +13,11 @@
                 {% if value['timestamp'] %}
                     Posted: {{ value['timestamp'] }}
                 {% endif %}
+                    {% if value['preview'] %}
+                        <div class="project-preview">
+                            <img src="{{ url_for('static', filename='images/' + value['preview']) }}">
+                        </div>
+                    {% endif %}
 
                 {% if value['updated'] %}
                     Updated: {{ value['updated'] }}
