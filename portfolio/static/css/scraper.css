@@ -29,3 +29,15 @@
     fill: none;
     stroke: gray;
 }
+
+#demo-container .visualizer-controls {
+    margin: -20px 0 10px 50px;
+}
+
+#demo-container svg a text {
+    stroke: #661E6E;
+}
+
+#demo-container svg a text:hover {
+    text-decoration: underline;
+}

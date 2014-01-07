@@ -185,7 +185,9 @@
         scaley = this.getLinearScale([5, this.innerHeight]);
 
         // create svg and initial selection
-        this.selection = d3.select(this.elem).append('svg')
+        this.svg = d3.select(this.elem).append('svg');
+
+        this.selection = this.svg
             .attr('class', 'horizontalbar-chart')
             .attr('width', this.containerWidth)
             .attr('height', height)

@@ -68,18 +68,6 @@
         });
     };
 
-    function makeDefaultChart(data) {
-        return new Visualizers({
-            title: 'Default',
-            data: data.science2013,
-            elem: '#demo-container',
-            dataProps: {
-                name: 'topic',
-                value: 'tags.length'
-            }
-        });
-    };
-
     function makePerTermCharts(data) {
         var visualizers, tags;
 
@@ -108,13 +96,7 @@
     };
 
     window.onload = function(e) {
-        var visualizers;
-
-        $('#demo-container').append('<label>Sort By Name</label>'
-            + '<input id="visualizer-sortby-name" data-sort="sortByName" type="checkbox">'
-            + '<label>Sort By Value</label>'
-            + '<input id="visualizer-sortby-value" data-sort="sortByValue" type="checkbox">');
-
+        var visualizers, $controls;
 
         fetchData('science2013').then(function(resp) {
             visualizers = makePerTermCharts(resp);
@@ -124,6 +106,26 @@
             } else {
                 _.each(visualizers, function(v) {
                     v.render();
+                    $controls = $('<div class="visualizer-controls">'
+                        + '<label>Sort By Name</label>'
+                        + '<input data-sort="sortByName" type="checkbox">'
+                        + '<label>Sort By Value</label>'
+                        + '<input data-sort="sortByValue" type="checkbox"></div>');
+
+                    $controls.insertAfter(v.svg[0]);
+
+                    $controls.on('change', 'input', function() {
+                        var checked = $(this).is(':checked'),
+                            sortType = $(this).data('sort');
+
+                        $(this).siblings('input').prop('checked', false);
+
+                        if (checked) {
+                            v[sortType](1000, 50, 'ascending');
+                        } else {
+                            v.restoreSort();
+                        }
+                    });
                 });
             }
 
@@ -138,22 +140,6 @@
                 padding: 25
             });
 
-            $('#visualizer-sortby-name, #visualizer-sortby-value').on('change', function() {
-                var checked = $(this).is(':checked'),
-                    sortType = $(this).data('sort');
-
-                $(this).siblings('input').prop('checked', false);
-
-                if (checked) {
-                    _.each(visualizers, function(v) {
-                        v[sortType](1000, 50, 'ascending');
-                    });
-                } else {
-                    _.each(visualizers, function(v) {
-                        v.restoreSort();
-                    });
-                }
-            });
 
         }, function(resp) {
             console && console.log(resp);
