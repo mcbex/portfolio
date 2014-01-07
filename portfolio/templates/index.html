@@ -14,21 +14,23 @@
 
                 <div class="project">
 
-                    <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
-
                     {% if value['preview'] %}
                         <div class="project-preview">
                             <img src="{{ url_for('static', filename='images/' + value['preview']) }}">
                         </div>
                     {% endif %}
 
-                    {% if value['timestamp'] %}
-                        <p>Posted: {{ value['timestamp'] }}</p>
-                    {% endif %}
+                    <div class="project-meta">
+                        <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
 
-                    {% if value['updated'] %}
-                        <p>Updated: {{ value['updated'] }}</p>
-                    {% endif %}
+                        {% if value['timestamp'] %}
+                            <p>Posted: {{ value['timestamp'] }}</p>
+                        {% endif %}
+
+                        {% if value['updated'] %}
+                            <p>Updated: {{ value['updated'] }}</p>
+                        {% endif %}
+                    </div>
 
                 </div>
 

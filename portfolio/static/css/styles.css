@@ -112,18 +112,18 @@ footer h6 {
 /* page specific styles */
 
 .recent-projects {
-    width: 50%;
+    width: 55%;
     float: left;
     margin-left: 1%;
 }
 
 .recent-articles {
-    width: 30%;
+    width: 35%;
     float: right;
 }
 
 .recent-projects, .recent-articles {
-    padding: 15px 4%;
+    padding: 15px 2%;
     background-color: white;
 }
 
@@ -142,8 +142,17 @@ footer h6 {
     height: 125px;
 }
 
+.recent-projects .project-preview img {
+    width: 150px;
+}
+
+.recent-projects .project-meta {
+    display: inline;
+}
+
 .project {
     margin-top: 10px;
+    overflow: hidden;
 }
 
 .project span {
