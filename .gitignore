@@ -5,3 +5,4 @@ bin/
 include/
 notes.txt
 .idea/*
+portfolio.wsgi
