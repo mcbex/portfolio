@@ -40,6 +40,12 @@ h1 {
     color: #A545B0;
 }
 
+h2 {
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: -1px;
+}
+
 h3 {
     font-size: 24px;
     color: #666;
@@ -49,6 +55,24 @@ header h1 {
     border-bottom: 16px solid #B3B3B3;
     margin: 0 -2000px;
     padding: 25px 2000px 0 2000px;
+}
+
+table {
+    width: 100%;
+    margin: 15px 0;
+}
+
+thead {
+    text-align: left;
+    background-color: #ECECEC;
+}
+
+th, td {
+    padding: 5px;
+}
+
+tr {
+    border-top: 1px solid #999;
 }
 
 .container {
@@ -112,10 +136,14 @@ footer .info {
 }
 
 .project-info {
-    width: 60%;
+    width: 70%;
     margin-bottom: 10px;
     padding: 10px 20px;
     background-color: white;
+}
+
+.post-date, .project-description, .downloads {
+    padding-bottom: 15px;
 }
 
 /* page specific styles */
