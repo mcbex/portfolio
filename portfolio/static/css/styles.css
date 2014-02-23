@@ -87,12 +87,21 @@ footer {
     min-height: 60px;
     position: absolute;
     bottom: 0;
+    width: 100%;
 }
 
 footer h6 {
     border-top: 36px solid #666;
     margin: 0 -2000px;
     padding: 5px 2000px;
+}
+
+footer .copyright {
+    float: left;
+}
+
+footer .info {
+    float: right;
 }
 
 /* project page styles */
