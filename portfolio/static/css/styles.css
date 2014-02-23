@@ -168,7 +168,7 @@ footer .info {
     margin-left: 10px;
 }
 
-.content.scraper, .content.all-projects {
+.content.scraper, .content.all-projects, .content.toggleshow {
     background-color: white;
 }
 
@@ -176,6 +176,14 @@ h3.categories {
     margin-top: 10px;
     border-bottom: 3px solid #D8A9DE;
     display: inline-block;
+}
+
+.toggleshow-demo {
+    padding: 0 20px;
+}
+
+.toggleshow-demo th:last-of-type {
+    width: 50%;
 }
 
 

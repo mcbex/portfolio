@@ -5,9 +5,12 @@
 {% block scripts %}
 
     {{ super() }}
+    <script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
     <script src="{{ url_for('static', filename='js/toggleshow/toggleshow.js') }}"></script>
 
     <script>
+
+        hljs.initHighlightingOnLoad();
 
         $(document).ready(function() {
 
@@ -36,6 +39,10 @@
                         main: '.child2',
                         inner: 'p',
                         largeIcon: false
+                    },
+                    {
+                        main: '.container2',
+                        inner: 'p'
                     }
                 ]
             });
@@ -49,26 +56,37 @@
 {% block styles %}
 
     {{ super() }}
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/7.1/styles/googlecode.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/toggleshow.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/demo.css') }}">
 
 {% endblock %}
 
 {% block content %}
 
-    <section class="content">
+    <section class="content toggleshow">
 
         <section class="project-info">
             <h2>{{ data['title'] }}</h2>
             <p class="post-date">Posted: {{ data['timestamp'] }}</p>
             <p class="project-description">
-                Another jQuery plugin
+                A{{ " " }}<a href="http://jquery.com/">jQuery</a>{{ " " }}plugin for toggling unlimited levels of content. The plugin is minimally styled to be simple to customize and can support most markup structures including tables.
             </p>
+            <div class="downloads">
+                <p>JavaScript:{{ " " }}<a href={{ data['js'] }}>{{ data['js'] }}</a></p>
+                <p>CSS:{{ " "  }}<a href={{ data['css'] }}>{{ data['css'] }}</a></p>
+            </div>
         </section>
 
         <section class="toggleshow-demo">
+
+            <div class="project-description">
+                If no options are passed, calling the plugin on an element will make that the top level container. All divs that are descendents of the top level container will also become containers.
+            </div>
+
             <div class="example">
                 <p class="demo-description">
-                    A basic example with default options
+                    A basic example with default options:
                 </p>
                 <div class="demo">
                     <div id="toggleshow">
@@ -84,14 +102,26 @@
                 </div>
                 <div class="code">
                     <pre><code>
-        sample code goes here
+$('#toggleshow').toggleshow();
                     </code></pre>
+<!--                    <pre><code>
+&lt;div id="toggleshow"&gt;
+    parent
+    &lt;div&gt;
+        child one
+        &lt;p&gt;inner content&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        child two
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </code></pre>-->
                 </div>
             </div>
 
             <div class="example">
                 <p class="demo-description">
-                    Call the plugin on multiple elements using a class name
+                    Call the plugin on multiple elements using a class name:
                 </p>
                 <div class="demo">
                     <div class="toggleshow2">
@@ -121,14 +151,40 @@
                 </div>
                 <div class="code">
                     <pre><code>
-        sample code goes here
+$('.toggleshow2').toggleshow();
                     </code></pre>
+<!--                    <pre><code>
+&lt;div class="toggleshow2"&gt;
+    parent 1
+    &lt;div&gt;
+        child one
+        &lt;p&gt;
+            inner content
+        &lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        child two
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;div class="toggleshow2"&gt;
+    parent 2
+    &lt;div&gt;
+        child one
+        &lt;p&gt;
+            inner content
+        &lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div&gt;
+        child two
+    &lt;/div&gt;
+&lt;/div&gt;
+                    </code></pre> -->
                 </div>
             </div>
 
             <div class="example">
                 <p class="demo-description">
-                    With default options
+                    A more complex markup structure using the mapContainers option:
                 </p>
                 <div class="demo">
                     <div class="toggleshow3">
@@ -152,10 +208,84 @@
                 </div>
                 <div class="code">
                     <pre><code>
-        sample code goes here
+$('.toggleshow3').toggleshow({
+    mapContainers: [
+        {
+            main: '.toggleshow3',
+            inner: '.container1 .container2',
+            largeIcon: true
+        },
+        {
+            main: '.container1',
+            inner: '.child1',
+            largeIcon: false
+        },
+        {
+            main: '.child1',
+            inner: 'p .child2',
+            largeIcon: true
+        },
+        {
+            main: '.child2',
+            inner: 'p',
+            largeIcon: false
+        },
+        {
+            main: '.container2',
+            inner: 'p'
+        }
+    ]
+});
                     </code></pre>
                 </div>
             </div>
+
+            <p>Options:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Option</th>
+                        <th>Type</th>
+                        <th>Default Value</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>mapContainers</td>
+                        <td>Array</td>
+                        <td>null</td>
+                        <td>An array of configuration objects indicating how elements should be nexted. Each object should have a 'main' property which is a string selector for the container and an 'inner' property which is a string selector of the children which should be hidden/shown by toggling the parent. There is an optional 'largeIcon' property (boolean) which determines whether the larger or smaller arrow is used as the icon. By default the top level container has a large arrow icon and all others are small.</td>
+                    </tr>
+                    <tr>
+                        <td>imageSource</td>
+                        <td>Object</td>
+                        <td>null</td>
+                        <td>An object with paths to the icon images. There should be four properties: containerOff, containerOn, childrenOff, and childrenOn. The plugin will add containerOn/Off images to the outmost parent element or to any elements specified by the containerMap. childrenOn/Off images will be added to all inner containers or as specified by the map. On is for the toggled open state, off indicates the container is toggled shut.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>Methods:</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>expand</td>
+                        <td>Open all containers.</td>
+                    </tr>
+                    <tr>
+                        <td>contract</td>
+                        <td>Closes all containers.</td>
+                    </tr>
+                </tbody>
+            </table>
+
         </section>
 
     </section>
