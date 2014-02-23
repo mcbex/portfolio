@@ -51,7 +51,10 @@
 
         <footer>
         {% block footer %}
-            <h6>Some footer stuff goes here</h6>
+            <h6>
+                <span class="copyright">&copy; 2013 Ming Beckwith</span>
+                <span class="info">Built with{{ " " }}<a href="http://flask.pocoo.org/">Flask</a>{{ " " }}and{{ " " }}<a href="http://redis.io/">Redis</a></span>
+            </h6>
         {% endblock %}
         </footer>
 

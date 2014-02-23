@@ -106,7 +106,9 @@
                 $(w).children('img.toggleshow-on').toggle(visible);
                 $(w).children('img.toggleshow-off').toggle(!visible);
             } else {
-                $(w).children().toggle();
+                $(w).children().not('img').toggle(visible);
+                $(w).children('img.toggleshow-on').toggle(visible);
+                $(w).children('img.toggleshow-off').toggle(!visible);
             }
         });
     };
@@ -119,15 +121,22 @@
             // mapContainers - array of config objects ie:
             // [{ main: 'string parent selector', inner: 'space delimited string of child selectors', largeIcon: bool }]
             $this = $(this),
-            images = {
-                containerOff: '<img class="toggleshow-image toggleshow-off" src="/static/js/toggleshow/images/chevron-right.png">',
-                containerOn: '<img class="toggleshow-image toggleshow-on" src="/static/js/toggleshow/images/chevron-down.png">',
-                childrenOff: '<img class="toggleshow-image toggleshow-off" src="/static/js/toggleshow/images/ios7-arrow-right.png">',
-                childrenOn: '<img class="toggleshow-image toggleshow-on" src="/static/js/toggleshow/images/ios7-arrow-down.png">'
-            },
             settings = $.extend({
-                mapContainers: null
+                mapContainers: null,
+                imageSource: {
+                    containerOff: '/static/js/toggleshow/images/chevron-right.png',
+                    containerOn: '/static/js/toggleshow/images/chevron-down.png',
+                    childrenOff: '/static/js/toggleshow/images/ios7-arrow-right.png',
+                    childrenOn: '/static/js/toggleshow/images/ios7-arrow-down.png'
+                }
             }, options);
+
+            images = {
+                containerOff: '<img class="toggleshow-image toggleshow-off" src="' + settings.imageSource.containerOff + '">',
+                containerOn: '<img class="toggleshow-image toggleshow-on" src="' + settings.imageSource.containerOn + '">',
+                childrenOff: '<img class="toggleshow-image toggleshow-off" src="' + settings.imageSource.childrenOff + '">',
+                childrenOn: '<img class="toggleshow-image toggleshow-on" src="' + settings.imageSource.childrenOn + '">'
+            };
 
             if (settings.mapContainers) {
                 $.each(settings.mapContainers, function(i, s) {

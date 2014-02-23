@@ -75,6 +75,10 @@ class Projects(RedisUtils):
         start, stop = range
         return self.db.zrange('rank', start, stop)
 
+    def remove_prop(self, name, prop):
+        """ remove a property completely from a project """
+        self.db.hdel(name, prop)
+
 
 class Scraper(RedisUtils):
     # stuff for d3 web scraper project
