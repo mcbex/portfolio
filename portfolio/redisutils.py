@@ -8,37 +8,58 @@ class RedisUtils:
         """ connect to database """
         self.db = redis.Redis(host='localhost', port=6379, db=0)
         self.timestamp = datetime.datetime.now()
+        self.indicies = {
+            'project': 'projectrank',
+            'article': 'articlerank'
+        }
         try:
             self.db.ping()
         except:
             print 'redis not connected'
 
+    def add_index(self, index, name):
+        # TODO refactor the count for multiple indexes
+        """ helper method to auto add new projects with the next index num """
+        idx = self.indicies[index]
+        count = self.db.incr('page_count')
+        self.db.zadd(idx, name, count)
+
+    def get_index_byrank(self, index, range):
+        """ retrieves sorted sets that have ranks within a certain range.
+        expects the set name and a tuple with the start(int) and stop(int)
+        of the range """
+        start, stop = range
+        return self.db.zrange(self.indicies[index], start, stop)
+
 
 class Projects(RedisUtils):
     # TODO make separate file
-    def add_project_index(self, name):
-        """ helper method to auto add new projects with the next index num """
-        count = self.db.incr('page_count')
-        self.db.zadd('rank', name, count)
-
     # TODO: add tagging, add remove project
+    # TODO ugh reconsider projects vs articles
+    # TODO reverse chronological
+    # TODO refactor and clean up so individual projects are not top level
     def set_project(self, name, **kwargs):
-        """ adds a new project to the db. expects name(str), optional kwargs 
+        """ adds a new project to the db. expects name(str), optional kwargs
             are: type, template(html file name), preview(image file name),
-            title """
+            title, description"""
         for key in kwargs:
             self.db.hset(name, key, kwargs[key])
-            if key == 'type':
-                self.db.sadd(kwargs[key], name)
-                self.db.sadd('types', kwargs[key])
-        if not 'type' in kwargs:
+        if 'type' in kwargs:
+            type = kwargs['type']
+            self.db.sadd(type, name)
+            self.db.sadd('types', type)
+            if type == 'article':
+                self.add_index('article', name)
+            else:
+                self.add_index('project', name)
+        else:
             if not self.db.hget(name, 'type'):
                 self.db.sadd('types', 'other')
+            self.add_index('project', name)
         if self.db.hget(name, 'timestamp'):
             self.db.hset(name, 'updated', self.timestamp)
         else:
             self.db.hset(name, 'timestamp', self.timestamp)
-        self.add_project_index(name)
 
     def get_project(self, name):
         """ retrieves a project by name """
@@ -48,18 +69,30 @@ class Projects(RedisUtils):
         project['name'] = name
         return project
 
+    def get_projects(self, type='project', range=(0, -1)):
+        """ convenienve method to get all projects sorted by rank """
+        projects = self.get_index_byrank(type, range);
+        data = []
+        if projects and len(projects):
+            for p in projects:
+                data.append(self.get_project(p))
+        return data
+
+    def format_data(self, data):
+        project_data = []
+        for d in data:
+            project = self.get_project(d)
+            project['name'] = d
+            project.pop('type', None)
+            project_data.append(project)
+        if not data:
+            print 'format type not found'
+        return project_data
+
     def get_projects_bytype(self, type):
         """ retrieves all projects by a given type """
         projects = self.db.smembers(type)
-        project_data = []
-        for p in projects:
-            project = self.get_project(p)
-            project['name'] = p
-            project.pop('type', None)
-            project_data.append(project)
-        if not projects:
-            print 'format type not found'
-        return project_data
+        return self.format_data(projects)
 
     # TODO get all names
     def get_all_types(self):
@@ -68,12 +101,6 @@ class Projects(RedisUtils):
         if not types:
             print 'no types found'
         return types
-
-    def get_projects_byrank(self, range):
-        """ retrieves projects that have ranks within a certain range. expects
-        a tuple with the start(int) and stop(int) of the range """
-        start, stop = range
-        return self.db.zrange('rank', start, stop)
 
     def remove_prop(self, name, prop):
         """ remove a property completely from a project """

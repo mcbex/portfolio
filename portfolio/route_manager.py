@@ -16,16 +16,10 @@ class RouteManager:
         types = self.redis.get_all_types()
         projects = {}
         for t in types:
-            projects[t] = self.redis.get_projects_bytype(t)
+            if t != 'article':
+                projects[t] = self.redis.get_projects_bytype(t)
         return projects
 
-    def get_n_projects(self, num_projects):
-        range = (0, num_projects)
-        projects = self.redis.get_projects_byrank(range)
-        project_data = None
-        if projects and len(projects):
-            project_data = []
-            for p in projects:
-                project_data.append(self.redis.get_project(p))
-        return project_data
+    def get_n_projects(self, type, num=-1):
+        return self.redis.get_projects(type, (0, num))
 
