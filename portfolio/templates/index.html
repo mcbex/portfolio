@@ -10,7 +10,7 @@
 
             <h3>recent projects</h3>
 
-        {% for value in data %}
+        {% for value in data['projects'] %}
 
                 <div class="project">
 
@@ -21,14 +21,14 @@
                     {% endif %}
 
                     <div class="project-meta">
-                        <a href="{{ url_for('views.load_page', id=value['name']) }}">{{ value['title'] }}</a>
+                        <a href="{{ url_for('views.load_project', id=value['name']) }}">{{ value['title'] }}</a>
 
                         {% if value['timestamp'] %}
-                            <p>Posted: {{ value['timestamp'] }}</p>
+                            <p class="meta">Posted: {{ value['timestamp'] }}</p>
                         {% endif %}
 
                         {% if value['updated'] %}
-                            <p>Updated: {{ value['updated'] }}</p>
+                            <p class="meta">Updated: {{ value['updated'] }}</p>
                         {% endif %}
                     </div>
 
@@ -41,6 +41,26 @@
         <div class="recent-articles">
 
             <h3>recent articles</h3>
+
+            {% for value in data['articles'] %}
+
+                    <div>
+
+                        <div class="project-meta">
+                            <a href="{{ url_for('views.load_article', id=value['name']) }}">{{ value['title'] }}</a>
+
+                            {% if value['timestamp'] %}
+                                <p class="meta">Posted: {{ value['timestamp'] }}</p>
+                            {% endif %}
+
+                            {% if value['updated'] %}
+                                <p class="meta">Updated: {{ value['updated'] }}</p>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+            {% endfor %}
 
         </div>
 

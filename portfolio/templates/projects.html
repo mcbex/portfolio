@@ -11,7 +11,7 @@
 
         {% for project in data[d] %}
             <p class="project">
-                <a href="{{ url_for('views.load_page', id=project['name']) }}">{{ project['title'] }}</a>
+                <a href="{{ url_for('views.load_project', id=project['name']) }}">{{ project['title'] }}</a>
 
                 {% if project['timestamp'] %}
                     <span>Posted: {{ project['timestamp'] }}</span>
