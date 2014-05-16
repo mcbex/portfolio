@@ -5,12 +5,9 @@
 {% block scripts %}
 
     {{ super() }}
-    <script src="http://yandex.st/highlightjs/7.1/highlight.min.js"></script>
     <script src="{{ url_for('static', filename='js/toggleshow/toggleshow.js') }}"></script>
 
     <script>
-
-        hljs.initHighlightingOnLoad();
 
         $(document).ready(function() {
 

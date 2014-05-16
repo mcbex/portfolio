@@ -8,6 +8,7 @@
 <!-- main styles go here -->
     {% block styles %}
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="http://yandex.st/highlightjs/8.0/styles/magula.min.css">
     {% endblock %}
 
     {% block scripts %}
@@ -16,6 +17,13 @@
     <script src="{{ url_for('static', filename='js/libs/underscore-min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/libs/raphael.js') }}"></script>
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="http://yandex.st/highlightjs/8.0/highlight.min.js"></script>
+    <script>
+        hljs.configure({
+            languages: [ 'javascript', 'html', 'css', 'bash', 'python', 'json' ]
+        });
+        hljs.initHighlightingOnLoad();
+    </script>
 
     {% endblock %}
 
