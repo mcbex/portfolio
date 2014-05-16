@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}{{ data['title'] }}{% endblock %}
+
+{% block styles %}
+
+    {{ super() }}
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/code.css') }}">
+
+{% endblock %}
+
+{% block scripts %}
+
+    {{ super() }}
+
+{% endblock %}
+
+{% block content %}
+
+    <section class="content toggleshow">
+
+        <section class="project-info">
+            <h2>{{ data['title'] }}</h2>
+            <p class="post-date">Posted: {{ data['timestamp'] }}</p>
+            <p class="project-description">
+                I recently became interested in automating my JavaScript unit tests as part of a {{ " " }}<a href="http://en.wikipedia.org/wiki/Continuous_integration">continuous integration</a>{{ " " }} build. Of course to accomplish that I needed to first install a CI server locally to {{ " " }}<span class="strike">break</span>{{ " " }} play with. I decided to use {{ " " }}<a href="http://jenkins-ci.org/">Jenkins</a>{{ " " }} since that is the main CI server I'm familiar with, it's open source (hurrah!), and there's great docs/plugins/online support.
+            </p>
+            <p class="project-description">
+                A lot of the articles I found on how to install Jenkins on OSX were several years old so I documented my own install process... and here it is:
+            </p>
+            <h4>Stuff you need (AKA what I used):</h4>
+            <p class="aside">Exact versions given where possible</p>
+            <ul class="technical-list">
+                <li>Mac OSX 10.8.4</li>
+                <li>Jenkins 1.5.48</li>
+                <li>Java 1.5+</li>
+            </ul>
+        </section>
+
+        <section class="article">
+            <p>
+                First, make sure you don't have anything running on port 8080 because Jenkins will use that by default. Then, download the installer and run it: {{ " " }}<a href="http://mirrors.jenkins-ci.org/osx/latest">http://mirrors.jenkins-ci.org/osx/latest</a>
+            </p>
+            <p>
+                Accept all the default options except "Installation Type". Here click "customize" and make sure "start at boot as jenkins" is checked and "start at boot as daemon" is not.
+            </p>
+            <p>If everything goes well, Jenkins will launch (probably in Safari) at {{ " " }}<a href="http://localhost:8080">http://localhost:8080</a></p>
+            <p>Easy peasy right?</p>
+            <h4>A few paths worth knowing:</h4>
+            <ul class="technical-list">
+                <li>Jenkins will be installed at {{ " " }}<code>/Users/Shared/Jenkins</code></li>
+                <li>The launch daemon is at {{ " " }}<code>/Library/LaunchDaemons/org.jenkins-ci.plist</code></li>
+                <li>Preferences are at {{ " " }}<code>/Library/Preferences</code></li>
+            </ul>
+        </section>
+
+        <section class="article">
+            <p>Jenkins can run via the launch daemon or by executing the war file found at /Applications/Jenkins. I used the launch daemon.</p>
+            <div class="snippet">
+                <p>If you choose to use the war file you can execute it with:</p>
+                <pre><code>java -jar /Applications/Jenkins/jenkins.war [options]</code></pre>
+        </div>
+        <div class="snippet">
+            <p>To stop Jenkins:</p>
+            <pre><code>sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist</code></pre>
+        </div>
+        <div class="snippet">
+            <p>And to start:</p>
+            <pre><code>sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</code></pre>
+        </div>
+        <div class="snippet">
+            <p>To see the default configuration:</p>
+            <pre><code>sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</code></pre>
+        </div>
+        <div class="snippet">
+            <p>To change the default configuration:</p>
+            <pre><code>defaults write /Library/Preferences/org.jenkins-ci [setting] [value]</code></pre>
+        </div>
+        <div class="snippet">
+            <p>Lets change the default port to something else since 8080 is frequently used by other apps:</p>
+            <pre><code># make sure Jenkins is stopped
+sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
+defaults write /Library/Preferences/org.jenkins-ci httpPort 8888
+# restart
+sudo launchctl load /Library/LaunchDaemons/org.jenkins-ci.plist</code></pre>
+        </div>
+        <p>Now go to {{ " " }}<a href="http://localhost:8888">http://localhost:8888</a>{{ " " }} in your favorite browser and the Jenkins UI should appear.</p>
+        <p>
+            Additional settings supported by the launch daemon can be seen here: {{ " " }}
+                <a href="https://wiki.jenkins-ci.org/display/JENKINS/Thanks+for+using+OSX+Installer">https://wiki.jenkins-ci.org/display/JENKINS/Thanks+for+using+OSX+Installer</a>
+        </p>
+        </section>
+
+    </section>
+
+{% endblock %}
+
+
