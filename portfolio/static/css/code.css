@@ -1,0 +1,29 @@
+code {
+    border: 1px dashed #CCC;
+    font-family: "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
+    font-size: 12px;
+}
+
+div.example {
+    overflow: hidden;
+}
+
+div.demo {
+    float: left;
+    width: 45%;
+    padding: 2em;
+}
+
+div.code {
+    float: right;
+    width: 45%;
+}
+
+div.snippet {
+    padding: 5px 0;
+}
+
+div.snippet p {
+    margin: 0;
+    padding: 5px;
+}
