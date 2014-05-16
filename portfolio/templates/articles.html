@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}All Articles{% endblock %}
+
+{% block content %}
+
+    <div class="content all-projects">
+
+        <h3 class="categories">articles</h3>
+
+    {% for d in data %}
+
+        <p class="project">
+            <a href="{{ url_for('views.load_article', id=d['name']) }}">{{ d['title'] }}</a>
+
+            {% if d['timestamp'] %}
+                <span>Posted: {{ d['timestamp'] }}</span>
+            {% endif %}
+
+            {% if d['updated'] %}
+                <span>Updated: {{ d['updated'] }}</span>
+            {% endif %}
+
+        </p>
+
+    {% endfor %}
+
+    </div>
+
+{% endblock %}
+
+
